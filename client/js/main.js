@@ -15,7 +15,7 @@
     // DOM references (set on init)
     var $chatContainer, $promptInput, $runBtn, $modelSelect, $providerSelect;
     var $settingsOverlay, $libraryOverlay;
-    var $compToggle;
+    var $compToggle, $templatePopover, $inputHints, $refineBtn, $templateBtn;
 
     /**
      * Initialize the panel.
@@ -30,6 +30,10 @@
         $settingsOverlay = document.getElementById('settings-overlay');
         $libraryOverlay = document.getElementById('library-overlay');
         $compToggle = document.getElementById('comp-context-toggle');
+        $templatePopover = document.getElementById('template-popover');
+        $inputHints = document.getElementById('input-hints');
+        $refineBtn = document.getElementById('refine-btn');
+        $templateBtn = document.getElementById('template-btn');
 
         // Load settings and populate UI
         var settings = AEConjure.Settings.load();
@@ -74,6 +78,17 @@
         document.getElementById('library-close').addEventListener('click', hideLibrary);
         document.getElementById('library-search').addEventListener('input', refreshLibrary);
         document.getElementById('library-filter').addEventListener('change', refreshLibrary);
+
+        // Template popover
+        $templateBtn.addEventListener('click', toggleTemplates);
+        buildTemplatePopover();
+
+        // Refine button
+        $refineBtn.addEventListener('click', handleRefine);
+
+        // Show initial hint
+        updateHint();
+        $promptInput.addEventListener('focus', updateHint);
 
         // Theme sync with After Effects
         syncTheme();
@@ -420,6 +435,126 @@
             } catch (e) {
                 addMessage('assistant', 'Result: ' + result);
             }
+        });
+    }
+
+    // ---- Templates ----
+
+    /**
+     * Toggle the template popover visibility.
+     */
+    function toggleTemplates() {
+        $templatePopover.classList.toggle('visible');
+    }
+
+    /**
+     * Build the template popover DOM from AEConjure.Templates.
+     */
+    function buildTemplatePopover() {
+        $templatePopover.textContent = '';
+        var categories = AEConjure.Templates.getAll();
+
+        categories.forEach(function (cat) {
+            var catLabel = document.createElement('div');
+            catLabel.className = 'template-category';
+            catLabel.textContent = cat.category;
+            $templatePopover.appendChild(catLabel);
+
+            cat.items.forEach(function (tmpl) {
+                var item = document.createElement('div');
+                item.className = 'template-item';
+
+                var name = document.createElement('div');
+                name.textContent = tmpl.label;
+
+                var preview = document.createElement('div');
+                preview.className = 'template-item-prompt';
+                preview.textContent = tmpl.prompt;
+
+                item.appendChild(name);
+                item.appendChild(preview);
+
+                item.addEventListener('click', function () {
+                    $promptInput.value = tmpl.prompt;
+                    $templatePopover.classList.remove('visible');
+                    $promptInput.focus();
+                    // Place cursor at first underscore placeholder
+                    var idx = tmpl.prompt.indexOf('_');
+                    if (idx !== -1) {
+                        $promptInput.setSelectionRange(idx, idx + 1);
+                    }
+                });
+
+                $templatePopover.appendChild(item);
+            });
+        });
+    }
+
+    // ---- Hints ----
+
+    /**
+     * Update the hint bar below the input.
+     */
+    function updateHint() {
+        if (!$inputHints) return;
+        var compEnabled = $compToggle && $compToggle.checked;
+        if (compEnabled) {
+            // Try to get layer count for a comp-aware hint
+            csInterface.evalScript('(function(){ try { var c = app.project.activeItem; return (c && c instanceof CompItem) ? c.numLayers : 0; } catch(e) { return 0; } })()', function (result) {
+                var count = parseInt(result, 10) || 0;
+                $inputHints.textContent = count > 0
+                    ? AEConjure.Templates.getCompHint(count)
+                    : AEConjure.Templates.getRandomHint();
+            });
+        } else {
+            $inputHints.textContent = AEConjure.Templates.getRandomHint();
+        }
+    }
+
+    // ---- Refine ----
+
+    /**
+     * Handle the AI refine button click.
+     */
+    function handleRefine() {
+        var prompt = $promptInput.value.trim();
+        if (!prompt || isProcessing) return;
+
+        var provider = $providerSelect.value;
+        var model = $modelSelect.value;
+        var apiKey = AEConjure.Settings.getApiKey(provider);
+
+        if (!apiKey) {
+            AEConjure.UI.showToast('Set your API key first to use refine.', 'error');
+            return;
+        }
+
+        $refineBtn.classList.add('refining');
+        $refineBtn.disabled = true;
+
+        var compPromise = ($compToggle && $compToggle.checked) ? getCompContext() : Promise.resolve('');
+
+        compPromise.then(function (compContext) {
+            return AEConjure.AIClient.refinePrompt({
+                prompt: prompt,
+                provider: provider,
+                model: model,
+                apiKey: apiKey,
+                compContext: compContext
+            });
+        }).then(function (result) {
+            if (result.success && result.refined) {
+                $promptInput.value = result.refined;
+                AEConjure.UI.showToast('Prompt refined!', 'success');
+            } else {
+                AEConjure.UI.showToast('Refine failed: ' + (result.error || 'Unknown error'), 'error');
+            }
+        }).catch(function (err) {
+            AEConjure.UI.showToast('Refine error: ' + (err.message || err), 'error');
+        }).then(function () {
+            $refineBtn.classList.remove('refining');
+            $refineBtn.disabled = false;
+            $promptInput.focus();
         });
     }
 

@@ -32,12 +32,22 @@
             <!-- Messages render here -->
         </div>
 
+        <!-- Prompt hints -->
+        <div class="input-hints" id="input-hints"></div>
+
         <!-- Input area -->
         <div class="input-area">
+            <button class="btn-icon" id="template-btn" title="Prompt templates">&#9776;</button>
             <textarea id="prompt-input"
                       placeholder="Describe what you want to do in After Effects..."
                       rows="2"></textarea>
+            <button class="btn-icon" id="refine-btn" title="Refine prompt with AI">&#10024;</button>
             <button class="btn btn-primary" id="run-btn">Run</button>
+        </div>
+
+        <!-- Template popover -->
+        <div class="template-popover" id="template-popover">
+            <!-- Templates render here via JS -->
         </div>
     </div>
 
@@ -119,6 +129,7 @@
     <script src="js/ai-client.js"></script>
     <script src="js/retry-engine.js"></script>
     <script src="js/library.js"></script>
+    <script src="js/templates.js"></script>
     <script src="js/ui.js"></script>
     <script src="js/main.js"></script>
 </body>

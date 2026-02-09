@@ -295,11 +295,83 @@ AEConjure.AIClient = (function () {
         });
     }
 
+    // Prompt refinement system prompt
+    var REFINE_PROMPT = [
+        'You refine vague After Effects requests into clear, specific instructions.',
+        'The user wrote a brief or unclear prompt. Rewrite it so an AI can generate precise ExtendScript.',
+        '',
+        'Rules:',
+        '- Add specific details: layer names, durations in seconds, hex colors, pixel values, property names',
+        '- If comp context is provided, reference actual layer names from it',
+        '- Keep the original intent but remove all ambiguity',
+        '- Return ONLY the refined prompt text. No code. No explanation. No quotes around it.'
+    ].join('\n');
+
+    /**
+     * Refine a user prompt using AI to make it more specific.
+     *
+     * @param {Object} options
+     * @param {string} options.prompt - The vague user prompt
+     * @param {string} options.provider - Provider key
+     * @param {string} options.model - Model ID
+     * @param {string} options.apiKey - API key
+     * @param {string} [options.compContext] - Comp context for layer-aware refinement
+     * @returns {Promise<Object>} { success, refined, error }
+     */
+    function refinePrompt(options) {
+        var userMessage = 'Refine this After Effects request:\n\n"' + options.prompt + '"';
+        if (options.compContext) {
+            userMessage += '\n\nComposition context:\n' + options.compContext;
+        }
+
+        var provider = options.provider;
+        var model = options.model;
+        var apiKey = options.apiKey;
+
+        // Use a lightweight request (reuse provider routing but with refine system prompt)
+        var originalSystem = SYSTEM_PROMPT;
+        SYSTEM_PROMPT = REFINE_PROMPT;
+
+        var promise;
+        switch (provider) {
+            case 'anthropic':
+                promise = sendAnthropic(userMessage, model, apiKey);
+                break;
+            case 'openai':
+                promise = sendOpenAI(userMessage, model, apiKey);
+                break;
+            case 'google':
+                promise = sendGoogle(userMessage, model, apiKey);
+                break;
+            default:
+                SYSTEM_PROMPT = originalSystem;
+                return Promise.reject({ success: false, error: 'Unknown provider' });
+        }
+
+        return promise.then(function (result) {
+            SYSTEM_PROMPT = originalSystem;
+            if (result.success) {
+                // The refined text is in rawResponse (not code)
+                var refined = result.rawResponse || '';
+                // Strip any accidental code fences
+                refined = refined.replace(/```[\s\S]*?```/g, '').trim();
+                // Strip surrounding quotes if the AI wrapped it
+                refined = refined.replace(/^["']|["']$/g, '').trim();
+                return { success: true, refined: refined };
+            }
+            return { success: false, error: result.error };
+        }).catch(function (err) {
+            SYSTEM_PROMPT = originalSystem;
+            return { success: false, error: typeof err === 'string' ? err : (err.message || 'Refine failed') };
+        });
+    }
+
     // Public API
     return {
         PROVIDERS: PROVIDERS,
         SYSTEM_PROMPT: SYSTEM_PROMPT,
         sendPrompt: sendPrompt,
+        refinePrompt: refinePrompt,
         extractCode: extractCode
     };
 })();
