@@ -59,7 +59,8 @@ AEConjure.RetryEngine = (function () {
                 provider: options.provider,
                 model: options.model,
                 apiKey: options.apiKey,
-                compContext: options.compContext
+                compContext: options.compContext,
+                history: options.history || []
             }).then(function (aiResult) {
                 if (!aiResult.success) {
                     attempts.push({

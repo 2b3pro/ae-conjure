@@ -58,9 +58,19 @@ AEConjure.AIClient = (function () {
         '6. Do NOT use modern JavaScript features: no let, const, =>, `template`, for...of, destructuring, spread, Promise, async/await.',
         '7. Do NOT use alert() or confirm() — return results as strings instead.',
         '8. Use standard ExtendScript APIs only. Refer to the After Effects Scripting Guide.',
+        '9. Do NOT call app.beginUndoGroup() or app.endUndoGroup() — the host handles undo wrapping automatically.',
         '',
         'When composition context is provided, use it to write more precise scripts.',
         'If asked to modify specific layers, reference them by index or name from the context.'
+    ].join('\n');
+
+    // Explain code system prompt
+    var EXPLAIN_PROMPT = [
+        'You are an After Effects ExtendScript expert teacher.',
+        'Explain the following script in plain English, step by step.',
+        'Focus on: what it does, which AE objects it manipulates, and any non-obvious techniques.',
+        'Keep explanations concise — 3-8 bullet points. No code in your response.',
+        'Format as a numbered list.'
     ].join('\n');
 
     /**
@@ -82,6 +92,7 @@ AEConjure.AIClient = (function () {
         var apiKey = options.apiKey;
         var compContext = options.compContext || '';
         var retryContext = options.retryContext || '';
+        var history = options.history || [];
 
         // Retrieve relevant knowledge if available
         var knowledge = '';
@@ -104,11 +115,11 @@ AEConjure.AIClient = (function () {
 
         switch (provider) {
             case 'anthropic':
-                return sendAnthropic(userMessage, model, apiKey);
+                return sendAnthropic(userMessage, model, apiKey, history, SYSTEM_PROMPT);
             case 'openai':
-                return sendOpenAI(userMessage, model, apiKey);
+                return sendOpenAI(userMessage, model, apiKey, history, SYSTEM_PROMPT);
             case 'google':
-                return sendGoogle(userMessage, model, apiKey);
+                return sendGoogle(userMessage, model, apiKey, history, SYSTEM_PROMPT);
             default:
                 return Promise.reject({ success: false, error: 'Unknown provider: ' + provider });
         }
@@ -117,12 +128,21 @@ AEConjure.AIClient = (function () {
     /**
      * Send request to Anthropic Claude API.
      */
-    function sendAnthropic(userMessage, model, apiKey) {
+    function sendAnthropic(userMessage, model, apiKey, history, systemPrompt) {
+        var messages = [];
+        // Add conversation history
+        if (history && history.length > 0) {
+            history.forEach(function (turn) {
+                messages.push({ role: turn.role, content: turn.content });
+            });
+        }
+        messages.push({ role: 'user', content: userMessage });
+
         var body = JSON.stringify({
             model: model,
             max_tokens: 4096,
-            system: SYSTEM_PROMPT,
-            messages: [{ role: 'user', content: userMessage }]
+            system: systemPrompt,
+            messages: messages
         });
 
         return httpPost(
@@ -146,14 +166,20 @@ AEConjure.AIClient = (function () {
     /**
      * Send request to OpenAI API.
      */
-    function sendOpenAI(userMessage, model, apiKey) {
+    function sendOpenAI(userMessage, model, apiKey, history, systemPrompt) {
+        var messages = [{ role: 'system', content: systemPrompt }];
+        // Add conversation history
+        if (history && history.length > 0) {
+            history.forEach(function (turn) {
+                messages.push({ role: turn.role, content: turn.content });
+            });
+        }
+        messages.push({ role: 'user', content: userMessage });
+
         var body = JSON.stringify({
             model: model,
             max_tokens: 4096,
-            messages: [
-                { role: 'system', content: SYSTEM_PROMPT },
-                { role: 'user', content: userMessage }
-            ]
+            messages: messages
         });
 
         return httpPost(
@@ -176,11 +202,24 @@ AEConjure.AIClient = (function () {
     /**
      * Send request to Google Gemini API.
      */
-    function sendGoogle(userMessage, model, apiKey) {
+    function sendGoogle(userMessage, model, apiKey, history, systemPrompt) {
         var url = PROVIDERS.google.baseUrl + model + ':generateContent?key=' + apiKey;
+
+        var contents = [];
+        // Add conversation history
+        if (history && history.length > 0) {
+            history.forEach(function (turn) {
+                contents.push({
+                    role: turn.role === 'assistant' ? 'model' : 'user',
+                    parts: [{ text: turn.content }]
+                });
+            });
+        }
+        contents.push({ role: 'user', parts: [{ text: userMessage }] });
+
         var body = JSON.stringify({
-            system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
-            contents: [{ parts: [{ text: userMessage }] }],
+            system_instruction: { parts: [{ text: systemPrompt }] },
+            contents: contents,
             generationConfig: { maxOutputTokens: 4096 }
         });
 
@@ -337,28 +376,22 @@ AEConjure.AIClient = (function () {
         var model = options.model;
         var apiKey = options.apiKey;
 
-        // Use a lightweight request (reuse provider routing but with refine system prompt)
-        var originalSystem = SYSTEM_PROMPT;
-        SYSTEM_PROMPT = REFINE_PROMPT;
-
         var promise;
         switch (provider) {
             case 'anthropic':
-                promise = sendAnthropic(userMessage, model, apiKey);
+                promise = sendAnthropic(userMessage, model, apiKey, [], REFINE_PROMPT);
                 break;
             case 'openai':
-                promise = sendOpenAI(userMessage, model, apiKey);
+                promise = sendOpenAI(userMessage, model, apiKey, [], REFINE_PROMPT);
                 break;
             case 'google':
-                promise = sendGoogle(userMessage, model, apiKey);
+                promise = sendGoogle(userMessage, model, apiKey, [], REFINE_PROMPT);
                 break;
             default:
-                SYSTEM_PROMPT = originalSystem;
                 return Promise.reject({ success: false, error: 'Unknown provider' });
         }
 
         return promise.then(function (result) {
-            SYSTEM_PROMPT = originalSystem;
             if (result.success) {
                 // The refined text is in rawResponse (not code)
                 var refined = result.rawResponse || '';
@@ -370,8 +403,49 @@ AEConjure.AIClient = (function () {
             }
             return { success: false, error: result.error };
         }).catch(function (err) {
-            SYSTEM_PROMPT = originalSystem;
             return { success: false, error: typeof err === 'string' ? err : (err.message || 'Refine failed') };
+        });
+    }
+
+    /**
+     * Explain a code snippet using AI.
+     *
+     * @param {Object} options
+     * @param {string} options.code - The code to explain
+     * @param {string} options.provider - Provider key
+     * @param {string} options.model - Model ID
+     * @param {string} options.apiKey - API key
+     * @returns {Promise<Object>} { success, rawResponse, error }
+     */
+    function explainCode(options) {
+        var userMessage = 'Explain this ExtendScript:\n\n```javascript\n' + options.code + '\n```';
+
+        var provider = options.provider;
+        var model = options.model;
+        var apiKey = options.apiKey;
+
+        var promise;
+        switch (provider) {
+            case 'anthropic':
+                promise = sendAnthropic(userMessage, model, apiKey, [], EXPLAIN_PROMPT);
+                break;
+            case 'openai':
+                promise = sendOpenAI(userMessage, model, apiKey, [], EXPLAIN_PROMPT);
+                break;
+            case 'google':
+                promise = sendGoogle(userMessage, model, apiKey, [], EXPLAIN_PROMPT);
+                break;
+            default:
+                return Promise.reject({ success: false, error: 'Unknown provider' });
+        }
+
+        return promise.then(function (result) {
+            if (result.success) {
+                return { success: true, rawResponse: result.rawResponse };
+            }
+            return { success: false, error: result.error };
+        }).catch(function (err) {
+            return { success: false, error: typeof err === 'string' ? err : (err.message || 'Explain failed') };
         });
     }
 
@@ -381,6 +455,7 @@ AEConjure.AIClient = (function () {
         SYSTEM_PROMPT: SYSTEM_PROMPT,
         sendPrompt: sendPrompt,
         refinePrompt: refinePrompt,
+        explainCode: explainCode,
         extractCode: extractCode
     };
 })();

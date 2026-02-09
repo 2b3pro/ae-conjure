@@ -16,9 +16,10 @@ AEConjure.UI = (function () {
      * @param {string} role - 'user' or 'assistant'
      * @param {string} content - Message content (plain text or code)
      * @param {Object} [meta] - Optional metadata { attempt, maxAttempts, success }
+     * @param {Object} [callbacks] - Optional callbacks { onExplain }
      * @returns {HTMLElement}
      */
-    function createMessage(role, content, meta) {
+    function createMessage(role, content, meta, callbacks) {
         var msg = document.createElement('div');
         msg.className = 'message message-' + role;
 
@@ -35,7 +36,7 @@ AEConjure.UI = (function () {
             var parts = parseResponse(content);
             parts.forEach(function (part) {
                 if (part.type === 'code') {
-                    body.appendChild(createCodeBlock(part.content));
+                    body.appendChild(createCodeBlock(part.content, callbacks));
                 } else {
                     var p = document.createElement('p');
                     p.textContent = part.content;
@@ -71,9 +72,11 @@ AEConjure.UI = (function () {
      * Create a code block element with basic syntax highlighting.
      *
      * @param {string} code
+     * @param {Object} [callbacks] - Optional callbacks { onExplain }
      * @returns {HTMLElement}
      */
-    function createCodeBlock(code) {
+    function createCodeBlock(code, callbacks) {
+        callbacks = callbacks || {};
         var container = document.createElement('div');
         container.className = 'code-block collapsed';
 
@@ -104,6 +107,21 @@ AEConjure.UI = (function () {
         headerLeft.appendChild(label);
         headerLeft.appendChild(lineCount);
 
+        var headerRight = document.createElement('div');
+        headerRight.className = 'code-header-right';
+
+        if (callbacks.onExplain) {
+            var explainBtn = document.createElement('button');
+            explainBtn.className = 'btn-icon tooltip';
+            explainBtn.title = 'Explain this code';
+            explainBtn.setAttribute('data-tooltip', 'Explain this code');
+            explainBtn.textContent = '?';
+            explainBtn.onclick = function () {
+                callbacks.onExplain(code);
+            };
+            headerRight.appendChild(explainBtn);
+        }
+
         var copyBtn = document.createElement('button');
         copyBtn.className = 'btn-icon';
         copyBtn.title = 'Copy code';
@@ -113,9 +131,10 @@ AEConjure.UI = (function () {
             copyBtn.textContent = '\u2713';
             setTimeout(function () { copyBtn.textContent = '\uD83D\uDCCB'; }, 1500);
         };
+        headerRight.appendChild(copyBtn);
 
         header.appendChild(headerLeft);
-        header.appendChild(copyBtn);
+        header.appendChild(headerRight);
 
         var pre = document.createElement('pre');
         var codeEl = document.createElement('code');
@@ -158,33 +177,51 @@ AEConjure.UI = (function () {
     }
 
     /**
-     * Create a "Save to Library" prompt bar.
+     * Create a "Save to Library" prompt bar with Undo option.
      *
      * @param {string} code - The code to save
      * @param {string} prompt - The original user prompt
      * @param {Function} onSave - Callback when user saves
+     * @param {Function} [onUndo] - Callback for undo
      * @returns {HTMLElement}
      */
-    function createSavePrompt(code, prompt, onSave) {
+    function createSavePrompt(code, prompt, onSave, onUndo) {
         var el = document.createElement('div');
         el.className = 'save-prompt';
 
         var text = document.createElement('span');
         text.textContent = 'Script ran successfully. ';
 
-        var btn = document.createElement('button');
-        btn.className = 'btn btn-small';
-        btn.textContent = 'Save to Library';
-        btn.onclick = function () {
+        if (onUndo) {
+            var undoBtn = document.createElement('button');
+            undoBtn.className = 'btn btn-small';
+            undoBtn.textContent = '\u21B6 Undo';
+            undoBtn.title = 'Undo last script in After Effects';
+            undoBtn.onclick = function () {
+                onUndo();
+            };
+            el.appendChild(text);
+            el.appendChild(undoBtn);
+        } else {
+            el.appendChild(text);
+        }
+
+        var saveBtn = document.createElement('button');
+        saveBtn.className = 'btn btn-small';
+        saveBtn.textContent = 'Save to Library';
+        saveBtn.onclick = function () {
             var name = window.prompt('Script name:', prompt.substring(0, 50));
             if (name) {
                 onSave({ name: name, code: code, prompt: prompt });
-                el.innerHTML = '<span class="status-success">&#10003; Saved to library</span>';
+                var saved = document.createElement('span');
+                saved.className = 'status-success';
+                saved.textContent = '\u2713 Saved to library';
+                el.textContent = '';
+                el.appendChild(saved);
             }
         };
 
-        el.appendChild(text);
-        el.appendChild(btn);
+        el.appendChild(saveBtn);
         return el;
     }
 

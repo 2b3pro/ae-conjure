@@ -27,8 +27,36 @@
             <select id="model-select" class="tooltip" data-tooltip="Model to use for code generation"></select>
         </div>
 
+        <!-- Context preview -->
+        <div class="context-preview" id="context-preview">
+            <span class="context-icon">&#8505;</span>
+            <span id="context-text">Comp context: off</span>
+            <button class="btn-icon context-toggle-btn" id="context-toggle" title="Show full context">&#9654;</button>
+        </div>
+        <div class="context-detail" id="context-detail">
+            <pre id="context-detail-text"></pre>
+        </div>
+
         <!-- Chat area -->
         <div class="chat-container" id="chat-container">
+            <!-- Onboarding (hidden once user starts chatting) -->
+            <div class="onboarding" id="onboarding">
+                <div class="onboarding-header">
+                    <h2>AE Conjure</h2>
+                    <p>AI-powered scripting for After Effects</p>
+                </div>
+                <div class="onboarding-setup" id="onboarding-setup">
+                    <div class="onboarding-step" id="onboarding-step-key">
+                        <span class="step-number">1</span>
+                        <span class="step-text">Add your API key</span>
+                        <button class="btn btn-small btn-primary" id="onboarding-key-btn">Set API Key</button>
+                    </div>
+                </div>
+                <div class="onboarding-examples">
+                    <p class="onboarding-label">Try asking:</p>
+                    <div class="onboarding-cards" id="onboarding-cards"></div>
+                </div>
+            </div>
             <!-- Messages render here -->
         </div>
 
@@ -82,6 +110,10 @@
                 <div class="settings-field">
                     <label for="max-retries">Max Auto-Retries</label>
                     <input type="number" id="max-retries" min="1" max="10" value="3">
+                </div>
+                <div class="settings-field">
+                    <label for="conversation-turns">Conversation Memory (turns)</label>
+                    <input type="number" id="conversation-turns" min="0" max="20" value="6">
                 </div>
             </div>
 

@@ -16,6 +16,8 @@
     var $chatContainer, $promptInput, $runBtn, $modelSelect, $providerSelect;
     var $settingsOverlay, $libraryOverlay;
     var $compToggle, $templatePopover, $inputHints, $refineBtn, $templateBtn;
+    var $contextPreview, $contextText, $contextToggle, $contextDetail, $contextDetailText;
+    var $onboarding;
 
     /**
      * Initialize the panel.
@@ -34,6 +36,12 @@
         $inputHints = document.getElementById('input-hints');
         $refineBtn = document.getElementById('refine-btn');
         $templateBtn = document.getElementById('template-btn');
+        $contextPreview = document.getElementById('context-preview');
+        $contextText = document.getElementById('context-text');
+        $contextToggle = document.getElementById('context-toggle');
+        $contextDetail = document.getElementById('context-detail');
+        $contextDetailText = document.getElementById('context-detail-text');
+        $onboarding = document.getElementById('onboarding');
 
         // Load settings and populate UI
         var settings = AEConjure.Settings.load();
@@ -86,9 +94,28 @@
         // Refine button
         $refineBtn.addEventListener('click', handleRefine);
 
+        // Context preview toggle
+        if ($contextPreview) {
+            $contextPreview.addEventListener('click', function () {
+                $contextDetail.classList.toggle('visible');
+                $contextToggle.textContent = $contextDetail.classList.contains('visible') ? '\u25BC' : '\u25B6';
+            });
+        }
+        if ($compToggle) {
+            $compToggle.addEventListener('change', function () {
+                updateContextPreview();
+            });
+        }
+
+        // Build onboarding
+        buildOnboarding();
+
         // Show initial hint
         updateHint();
-        $promptInput.addEventListener('focus', updateHint);
+        $promptInput.addEventListener('focus', function () {
+            updateHint();
+            updateContextPreview();
+        });
 
         // Theme sync with After Effects
         syncTheme();
@@ -118,6 +145,9 @@
             });
         }
 
+        // Initial context preview update
+        updateContextPreview();
+
         // Focus input
         $promptInput.focus();
     }
@@ -128,6 +158,13 @@
     function handleRun() {
         var prompt = $promptInput.value.trim();
         if (!prompt || isProcessing) return;
+
+        // Check for chat commands
+        if (prompt.charAt(0) === '/') {
+            $promptInput.value = '';
+            handleCommand(prompt);
+            return;
+        }
 
         // Read provider and model from the DOM dropdowns (source of truth)
         var provider = $providerSelect.value;
@@ -149,6 +186,7 @@
         $runBtn.disabled = true;
         $runBtn.textContent = 'Running...';
         $promptInput.value = '';
+        hideOnboarding();
 
         // Add user message
         addMessage('user', prompt);
@@ -169,6 +207,7 @@
                 apiKey: apiKey,
                 compContext: compContext,
                 maxRetries: settings.maxRetries || 3,
+                history: buildConversationHistory(settings.conversationTurns),
                 onAttempt: function (num, max, status) {
                     updateProgress(num, max, status);
                 },
@@ -190,9 +229,9 @@
                 var lastAttempt = result.attempts[result.attempts.length - 1];
                 addMessage('assistant', lastAttempt.rawResponse || '```javascript\n' + lastAttempt.code + '\n```', {
                     success: true
-                });
+                }, { onExplain: handleExplain });
 
-                // Offer to save
+                // Offer to save + undo
                 var savePrompt = AEConjure.UI.createSavePrompt(
                     result.finalCode,
                     prompt,
@@ -204,7 +243,8 @@
                             description: prompt
                         });
                         AEConjure.UI.showToast('Script saved to library!', 'success');
-                    }
+                    },
+                    handleUndo
                 );
                 $chatContainer.appendChild(savePrompt);
             } else {
@@ -218,7 +258,8 @@
                 // Show the last code if available
                 var lastCode = result.attempts[result.attempts.length - 1];
                 if (lastCode && lastCode.code) {
-                    addMessage('assistant', '```javascript\n' + lastCode.code + '\n```');
+                    addMessage('assistant', '```javascript\n' + lastCode.code + '\n```',
+                        null, { onExplain: handleExplain });
                 }
             }
 
@@ -254,8 +295,9 @@
     /**
      * Add a message to the chat container.
      */
-    function addMessage(role, content, meta) {
-        var msg = AEConjure.UI.createMessage(role, content, meta);
+    function addMessage(role, content, meta, callbacks) {
+        hideOnboarding();
+        var msg = AEConjure.UI.createMessage(role, content, meta, callbacks);
         $chatContainer.appendChild(msg);
         chatHistory.push({ role: role, content: content });
         scrollToBottom();
@@ -342,6 +384,7 @@
         document.getElementById('key-openai').value = settings.apiKeys.openai || '';
         document.getElementById('key-google').value = settings.apiKeys.google || '';
         document.getElementById('max-retries').value = settings.maxRetries || 3;
+        document.getElementById('conversation-turns').value = settings.conversationTurns || 6;
         $settingsOverlay.classList.add('visible');
     }
 
@@ -360,9 +403,11 @@
         AEConjure.Settings.setApiKey('openai', document.getElementById('key-openai').value.trim());
         AEConjure.Settings.setApiKey('google', document.getElementById('key-google').value.trim());
         AEConjure.Settings.set('maxRetries', parseInt(document.getElementById('max-retries').value, 10) || 3);
+        AEConjure.Settings.set('conversationTurns', parseInt(document.getElementById('conversation-turns').value, 10) || 6);
         AEConjure.Settings.set('includeCompContext', $compToggle.checked);
         AEConjure.UI.showToast('Settings saved!', 'success');
         hideSettings();
+        updateOnboardingStep();
     }
 
     /**
@@ -593,6 +638,256 @@
             // Not running in AE — use default dark theme
             document.body.classList.add('theme-dark');
         }
+    }
+
+    // ---- Multi-Turn Conversation ----
+
+    /**
+     * Build conversation history for AI context.
+     * Returns the last N turns from chatHistory.
+     *
+     * @param {number} [maxTurns] - Max turns to include (default: 6)
+     * @returns {Array<{role: string, content: string}>}
+     */
+    function buildConversationHistory(maxTurns) {
+        maxTurns = maxTurns || 6;
+        if (maxTurns <= 0) return [];
+        var relevant = chatHistory.filter(function (msg) {
+            return msg.role === 'user' || msg.role === 'assistant';
+        });
+        // Exclude the last entry (the current prompt was just pushed)
+        if (relevant.length > 0) {
+            relevant = relevant.slice(0, -1);
+        }
+        return relevant.slice(-maxTurns);
+    }
+
+    // ---- Chat Commands ----
+
+    /**
+     * Handle slash commands.
+     */
+    function handleCommand(input) {
+        var parts = input.split(/\s+/);
+        var cmd = parts[0].toLowerCase();
+
+        switch (cmd) {
+            case '/clear':
+                chatHistory = [];
+                $chatContainer.textContent = '';
+                buildOnboarding();
+                addSystemMessage('Chat cleared.');
+                break;
+
+            case '/undo':
+                handleUndo();
+                break;
+
+            case '/help':
+                addSystemMessage(
+                    'Commands:\n' +
+                    '  /clear \u2014 Clear chat history\n' +
+                    '  /undo \u2014 Undo last script in After Effects\n' +
+                    '  /help \u2014 Show this help\n' +
+                    '  /context \u2014 Show current comp context\n' +
+                    '  /kb \u2014 Show knowledge base stats\n' +
+                    '\n' +
+                    'Tips:\n' +
+                    '  \u2022 Be specific: "red 100x100 solid" beats "make a layer"\n' +
+                    '  \u2022 Conversation carries forward \u2014 say "now change its color"\n' +
+                    '  \u2022 Use the sparkle button to refine vague prompts'
+                );
+                break;
+
+            case '/context':
+                csInterface.evalScript('getCompSummary()', function (result) {
+                    addSystemMessage(result || 'No active composition.');
+                });
+                break;
+
+            case '/kb':
+                if (AEConjure.Knowledge && AEConjure.Knowledge.isReady()) {
+                    var kb = AEConjure.Knowledge.stats();
+                    addSystemMessage('Knowledge base v' + kb.version + ': ' + kb.atoms + ' API atoms, ' + kb.recipes + ' recipes, ' + kb.gotchas + ' gotchas');
+                } else {
+                    addSystemMessage('Knowledge base not loaded.');
+                }
+                break;
+
+            default:
+                addSystemMessage('Unknown command: ' + cmd + '. Type /help for available commands.');
+        }
+    }
+
+    // ---- Undo ----
+
+    /**
+     * Undo the last script execution in After Effects.
+     */
+    function handleUndo() {
+        csInterface.evalScript('undoLast()', function (result) {
+            try {
+                var parsed = JSON.parse(result);
+                if (parsed.success) {
+                    AEConjure.UI.showToast('Undone!', 'success');
+                } else {
+                    AEConjure.UI.showToast('Undo failed: ' + parsed.error, 'error');
+                }
+            } catch (e) {
+                AEConjure.UI.showToast('Undo failed', 'error');
+            }
+        });
+    }
+
+    // ---- Explain ----
+
+    /**
+     * Send code to AI for explanation.
+     */
+    function handleExplain(code) {
+        var provider = $providerSelect.value;
+        var apiKey = AEConjure.Settings.getApiKey(provider);
+
+        if (!apiKey) {
+            AEConjure.UI.showToast('Set your API key first.', 'error');
+            return;
+        }
+
+        addSystemMessage('Explaining...');
+
+        AEConjure.AIClient.explainCode({
+            code: code,
+            provider: provider,
+            model: $modelSelect.value,
+            apiKey: apiKey
+        }).then(function (result) {
+            // Remove the "Explaining..." message
+            var messages = $chatContainer.querySelectorAll('.message-system');
+            if (messages.length > 0) {
+                var last = messages[messages.length - 1];
+                if (last.textContent === 'Explaining...') {
+                    last.remove();
+                }
+            }
+
+            if (result.success) {
+                addMessage('assistant', result.rawResponse);
+            } else {
+                AEConjure.UI.showToast('Explain failed: ' + result.error, 'error');
+            }
+        }).catch(function (err) {
+            AEConjure.UI.showToast('Explain error: ' + (err.message || err), 'error');
+        });
+    }
+
+    // ---- Context Preview ----
+
+    /**
+     * Update the comp context preview bar.
+     */
+    function updateContextPreview() {
+        if (!$contextText) return;
+
+        if (!$compToggle || !$compToggle.checked) {
+            $contextText.textContent = 'Comp context: off';
+            if ($contextDetailText) $contextDetailText.textContent = '';
+            return;
+        }
+
+        csInterface.evalScript('getCompSummary()', function (result) {
+            if (result && result !== 'EvalScript error.' && result !== 'No active composition.') {
+                var firstLine = result.split('\n')[0] || 'Active comp';
+                $contextText.textContent = firstLine;
+                if ($contextDetailText) $contextDetailText.textContent = result;
+            } else {
+                $contextText.textContent = 'No active composition';
+                if ($contextDetailText) $contextDetailText.textContent = '';
+            }
+        });
+    }
+
+    // ---- Onboarding ----
+
+    var ONBOARDING_EXAMPLES = [
+        { icon: '\uD83C\uDFA8', label: 'Create layers', prompt: 'Create a red solid layer named "Background" sized to the comp' },
+        { icon: '\u2728', label: 'Animate', prompt: 'Animate selected layer opacity from 0% to 100% over 2 seconds with ease' },
+        { icon: '\uD83D\uDD27', label: 'Batch edit', prompt: 'Rename all layers sequentially as "Layer_01", "Layer_02", etc.' }
+    ];
+
+    /**
+     * Build the onboarding screen inside chat container.
+     */
+    function buildOnboarding() {
+        $onboarding = document.getElementById('onboarding');
+        if (!$onboarding) return;
+
+        // Build example cards
+        var cards = document.getElementById('onboarding-cards');
+        if (cards) {
+            cards.textContent = '';
+            ONBOARDING_EXAMPLES.forEach(function (ex) {
+                var card = document.createElement('div');
+                card.className = 'onboarding-card';
+
+                var icon = document.createElement('span');
+                icon.className = 'card-icon';
+                icon.textContent = ex.icon;
+
+                var textWrap = document.createElement('div');
+                textWrap.className = 'card-text';
+
+                var labelEl = document.createElement('span');
+                labelEl.className = 'card-label';
+                labelEl.textContent = ex.label;
+
+                var promptEl = document.createElement('span');
+                promptEl.className = 'card-prompt';
+                promptEl.textContent = ex.prompt;
+
+                textWrap.appendChild(labelEl);
+                textWrap.appendChild(promptEl);
+                card.appendChild(icon);
+                card.appendChild(textWrap);
+
+                card.addEventListener('click', function () {
+                    $promptInput.value = ex.prompt;
+                    $promptInput.focus();
+                });
+
+                cards.appendChild(card);
+            });
+        }
+
+        // Wire setup button
+        var keyBtn = document.getElementById('onboarding-key-btn');
+        if (keyBtn) {
+            keyBtn.onclick = function () { showSettings(); };
+        }
+
+        updateOnboardingStep();
+    }
+
+    /**
+     * Update onboarding step to show checkmark if API key exists.
+     */
+    function updateOnboardingStep() {
+        var step = document.getElementById('onboarding-step-key');
+        if (!step) return;
+
+        if (AEConjure.Settings.hasApiKey()) {
+            step.classList.add('complete');
+            var stepNum = step.querySelector('.step-number');
+            if (stepNum) stepNum.textContent = '\u2713';
+            var btn = document.getElementById('onboarding-key-btn');
+            if (btn) btn.style.display = 'none';
+        }
+    }
+
+    /**
+     * Hide the onboarding screen.
+     */
+    function hideOnboarding() {
+        if ($onboarding) $onboarding.style.display = 'none';
     }
 
     // Boot when DOM is ready
