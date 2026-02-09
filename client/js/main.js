@@ -108,6 +108,16 @@
             addSystemMessage('No API key configured. Click the gear icon to add your API key.');
         }
 
+        // Initialize knowledge base (downloads on first run)
+        if (AEConjure.Knowledge) {
+            AEConjure.Knowledge.init().then(function (ready) {
+                if (ready) {
+                    var kb = AEConjure.Knowledge.stats();
+                    addSystemMessage('Knowledge base loaded: ' + kb.atoms + ' API refs, ' + kb.recipes + ' patterns, ' + kb.gotchas + ' gotchas (v' + kb.version + ')');
+                }
+            });
+        }
+
         // Focus input
         $promptInput.focus();
     }

@@ -83,8 +83,17 @@ AEConjure.AIClient = (function () {
         var compContext = options.compContext || '';
         var retryContext = options.retryContext || '';
 
+        // Retrieve relevant knowledge if available
+        var knowledge = '';
+        if (AEConjure.Knowledge && AEConjure.Knowledge.isReady()) {
+            knowledge = AEConjure.Knowledge.retrieve(options.prompt);
+        }
+
         // Build the full user message
         var userMessage = '';
+        if (knowledge) {
+            userMessage += knowledge + '\n\n';
+        }
         if (compContext) {
             userMessage += 'Current composition context:\n' + compContext + '\n\n';
         }

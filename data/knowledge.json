@@ -1,0 +1,2372 @@
+{
+  "version": "1.0.0",
+  "generated": "2026-02-09",
+  "source": "ae-scripting.docsforadobe.dev",
+  "atoms": [
+    {
+      "className": "Application",
+      "member": "project",
+      "signature": "",
+      "returnType": "Project",
+      "description": "The current After Effects project. Read-only.",
+      "notes": "Returns the currently open Project object.",
+      "tags": ["application", "project", "root"]
+    },
+    {
+      "className": "Application",
+      "member": "version",
+      "signature": "",
+      "returnType": "String",
+      "description": "Version string of the running After Effects application.",
+      "notes": "Read-only. Format: 'major.minor.build'.",
+      "tags": ["application", "version"]
+    },
+    {
+      "className": "Application",
+      "member": "buildName",
+      "signature": "",
+      "returnType": "String",
+      "description": "The name of the build of After Effects.",
+      "notes": "Read-only.",
+      "tags": ["application", "build"]
+    },
+    {
+      "className": "Application",
+      "member": "buildNumber",
+      "signature": "",
+      "returnType": "Integer",
+      "description": "Build number of the running After Effects application.",
+      "notes": "Read-only.",
+      "tags": ["application", "build"]
+    },
+    {
+      "className": "Application",
+      "member": "isRenderEngine",
+      "signature": "",
+      "returnType": "Boolean",
+      "description": "True if running in render engine mode (aerender).",
+      "notes": "Read-only.",
+      "tags": ["application", "render"]
+    },
+    {
+      "className": "Application",
+      "member": "isBeta",
+      "signature": "",
+      "returnType": "Boolean",
+      "description": "True if running a beta version of After Effects.",
+      "notes": "Read-only.",
+      "tags": ["application", "beta"]
+    },
+    {
+      "className": "Application",
+      "member": "language",
+      "signature": "",
+      "returnType": "Language enum",
+      "description": "Language After Effects is running in.",
+      "notes": "Read-only. ENGLISH, JAPANESE, FRENCH, GERMAN, etc.",
+      "tags": ["application", "language", "locale"]
+    },
+    {
+      "className": "Application",
+      "member": "settings",
+      "signature": "",
+      "returnType": "Settings",
+      "description": "The application settings.",
+      "notes": "Read-only.",
+      "tags": ["application", "settings", "preferences"]
+    },
+    {
+      "className": "Application",
+      "member": "preferences",
+      "signature": "",
+      "returnType": "Preferences",
+      "description": "The application preferences.",
+      "notes": "Read-only.",
+      "tags": ["application", "preferences"]
+    },
+    {
+      "className": "Application",
+      "member": "activeViewer",
+      "signature": "",
+      "returnType": "Viewer",
+      "description": "The currently focused viewer panel.",
+      "notes": "Read-only. May be null if no viewer is active.",
+      "tags": ["application", "viewer", "panel"]
+    },
+    {
+      "className": "Application",
+      "member": "effects",
+      "signature": "",
+      "returnType": "Array",
+      "description": "Array of all installed effects, each with name, matchName, and category.",
+      "notes": "Read-only. Useful for finding effect matchNames.",
+      "tags": ["application", "effects", "plugins"]
+    },
+    {
+      "className": "Application",
+      "member": "availableGPUAccelTypes",
+      "signature": "",
+      "returnType": "Array",
+      "description": "Available GPU acceleration types on this machine.",
+      "notes": "Read-only.",
+      "tags": ["application", "gpu", "acceleration"]
+    },
+    {
+      "className": "Application",
+      "member": "newProject",
+      "signature": "()",
+      "returnType": "Project",
+      "description": "Creates a new project, closing existing one after save dialog.",
+      "notes": "Returns the new Project object.",
+      "tags": ["application", "project", "create"]
+    },
+    {
+      "className": "Application",
+      "member": "open",
+      "signature": "(file)",
+      "returnType": "Project",
+      "description": "Opens a project file.",
+      "notes": "file: File object. Returns the opened Project.",
+      "tags": ["application", "project", "open", "file"]
+    },
+    {
+      "className": "Application",
+      "member": "quit",
+      "signature": "()",
+      "returnType": "void",
+      "description": "Quits After Effects.",
+      "notes": "Will prompt to save if there are unsaved changes.",
+      "tags": ["application", "quit"]
+    },
+    {
+      "className": "Application",
+      "member": "beginUndoGroup",
+      "signature": "(undoString)",
+      "returnType": "void",
+      "description": "Opens a new undo group with the given label.",
+      "notes": "CRITICAL: Always pair with endUndoGroup(). undoString appears in Edit > Undo menu. All operations between begin and end are treated as a single undoable action.",
+      "tags": ["application", "undo", "group", "history"]
+    },
+    {
+      "className": "Application",
+      "member": "endUndoGroup",
+      "signature": "()",
+      "returnType": "void",
+      "description": "Closes the current undo group.",
+      "notes": "CRITICAL: Must be called to close a group opened by beginUndoGroup(). Use try/finally to ensure it always runs.",
+      "tags": ["application", "undo", "group", "history"]
+    },
+    {
+      "className": "Application",
+      "member": "beginSuppressDialogs",
+      "signature": "()",
+      "returnType": "void",
+      "description": "Suppresses all dialog boxes that might appear during script execution.",
+      "notes": "Pair with endSuppressDialogs(). Use when running unattended scripts.",
+      "tags": ["application", "dialogs", "suppress"]
+    },
+    {
+      "className": "Application",
+      "member": "endSuppressDialogs",
+      "signature": "(alert)",
+      "returnType": "void",
+      "description": "Ends dialog suppression. If alert is true, shows any collected warnings.",
+      "notes": "alert: Boolean. Set to false to discard suppressed dialogs.",
+      "tags": ["application", "dialogs", "suppress"]
+    },
+    {
+      "className": "Application",
+      "member": "purge",
+      "signature": "(target)",
+      "returnType": "void",
+      "description": "Purges memory and disk cache.",
+      "notes": "target: PurgeTarget enum (ALL_CACHES, UNDO_CACHES, SNAPSHOT_CACHES, IMAGE_CACHES).",
+      "tags": ["application", "purge", "cache", "memory"]
+    },
+    {
+      "className": "Application",
+      "member": "setMemoryUsageLimits",
+      "signature": "(imageCachePercentage, maximumMemoryPercentage)",
+      "returnType": "void",
+      "description": "Sets the memory usage limits.",
+      "notes": "Both values are percentages (0-100).",
+      "tags": ["application", "memory", "performance"]
+    },
+    {
+      "className": "Application",
+      "member": "setSavePreferencesOnQuit",
+      "signature": "(doSave)",
+      "returnType": "void",
+      "description": "Controls whether preferences are saved when quitting.",
+      "notes": "doSave: Boolean.",
+      "tags": ["application", "preferences", "save"]
+    },
+    {
+      "className": "Application",
+      "member": "executeCommand",
+      "signature": "(commandId)",
+      "returnType": "void",
+      "description": "Executes a menu command by ID.",
+      "notes": "commandId: Integer. Use app.findMenuCommandId() to get IDs.",
+      "tags": ["application", "command", "menu"]
+    },
+    {
+      "className": "Application",
+      "member": "findMenuCommandId",
+      "signature": "(commandName)",
+      "returnType": "Integer",
+      "description": "Returns the numeric command ID for a menu command name.",
+      "notes": "commandName: String (e.g., 'Paste').",
+      "tags": ["application", "command", "menu"]
+    },
+    {
+      "className": "Application",
+      "member": "scheduleTask",
+      "signature": "(stringToExecute, delay, repeat)",
+      "returnType": "Integer",
+      "description": "Schedules script to execute after a delay.",
+      "notes": "stringToExecute: String of code. delay: milliseconds. repeat: Boolean. Returns task ID.",
+      "tags": ["application", "task", "schedule", "timer"]
+    },
+    {
+      "className": "Application",
+      "member": "cancelTask",
+      "signature": "(taskID)",
+      "returnType": "void",
+      "description": "Cancels a previously scheduled task.",
+      "notes": "taskID: Integer returned by scheduleTask().",
+      "tags": ["application", "task", "cancel"]
+    },
+    {
+      "className": "Application",
+      "member": "parseSwatchFile",
+      "signature": "(file)",
+      "returnType": "SwatchData",
+      "description": "Loads color data from an Adobe Swatch Exchange (.ase) file.",
+      "notes": "file: File object.",
+      "tags": ["application", "color", "swatch"]
+    },
+    {
+      "className": "Project",
+      "member": "file",
+      "signature": "",
+      "returnType": "File",
+      "description": "The file for the currently open project.",
+      "notes": "Read-only. Null for unsaved projects.",
+      "tags": ["project", "file", "save"]
+    },
+    {
+      "className": "Project",
+      "member": "rootFolder",
+      "signature": "",
+      "returnType": "FolderItem",
+      "description": "The root folder of the project.",
+      "notes": "Read-only. Contains all items in the project panel.",
+      "tags": ["project", "folder", "root", "items"]
+    },
+    {
+      "className": "Project",
+      "member": "items",
+      "signature": "",
+      "returnType": "ItemCollection",
+      "description": "All items in the project (comps, footage, folders).",
+      "notes": "Read-only. Access by index (1-based).",
+      "tags": ["project", "items", "collection"]
+    },
+    {
+      "className": "Project",
+      "member": "activeItem",
+      "signature": "",
+      "returnType": "Item",
+      "description": "The currently active item in the Project panel.",
+      "notes": "Read-only. May be null. Check with instanceof CompItem before using as a comp.",
+      "tags": ["project", "active", "item", "selection"]
+    },
+    {
+      "className": "Project",
+      "member": "selection",
+      "signature": "",
+      "returnType": "Array of Item",
+      "description": "Array of all selected items in the project panel.",
+      "notes": "Read-only. Empty array if nothing is selected.",
+      "tags": ["project", "selection", "items"]
+    },
+    {
+      "className": "Project",
+      "member": "numItems",
+      "signature": "",
+      "returnType": "Integer",
+      "description": "Total number of items in the project.",
+      "notes": "Read-only.",
+      "tags": ["project", "items", "count"]
+    },
+    {
+      "className": "Project",
+      "member": "renderQueue",
+      "signature": "",
+      "returnType": "RenderQueue",
+      "description": "The render queue for the project.",
+      "notes": "Read-only.",
+      "tags": ["project", "render", "queue"]
+    },
+    {
+      "className": "Project",
+      "member": "bitsPerChannel",
+      "signature": "",
+      "returnType": "Integer",
+      "description": "Project color depth: 8, 16, or 32 bits per channel.",
+      "notes": "Read/write.",
+      "tags": ["project", "color", "depth", "bits"]
+    },
+    {
+      "className": "Project",
+      "member": "linearBlending",
+      "signature": "",
+      "returnType": "Boolean",
+      "description": "True if project uses linear blending (Blend Colors Using 1.0 Gamma).",
+      "notes": "Read/write.",
+      "tags": ["project", "color", "blending", "gamma"]
+    },
+    {
+      "className": "Project",
+      "member": "transparencyGridThumbnails",
+      "signature": "",
+      "returnType": "Boolean",
+      "description": "True if thumbnails show transparency grid.",
+      "notes": "Read/write.",
+      "tags": ["project", "thumbnails", "transparency"]
+    },
+    {
+      "className": "Project",
+      "member": "expressionEngine",
+      "signature": "",
+      "returnType": "String",
+      "description": "Current expression engine: 'extendscript' or 'javascript-1.0'.",
+      "notes": "Read/write.",
+      "tags": ["project", "expressions", "engine"]
+    },
+    {
+      "className": "Project",
+      "member": "timeDisplayType",
+      "signature": "",
+      "returnType": "TimeDisplayType enum",
+      "description": "How time is displayed in the project.",
+      "notes": "Read/write. FRAMES, TIMECODE.",
+      "tags": ["project", "time", "display", "timecode"]
+    },
+    {
+      "className": "Project",
+      "member": "framesUseFeetFrames",
+      "signature": "",
+      "returnType": "Boolean",
+      "description": "True if using Feet+Frames timecode display.",
+      "notes": "Read/write.",
+      "tags": ["project", "time", "timecode", "feet"]
+    },
+    {
+      "className": "Project",
+      "member": "feetFramesFilmType",
+      "signature": "",
+      "returnType": "FeetFramesFilmType enum",
+      "description": "Film type when using feet+frames.",
+      "notes": "Read/write. MM16, MM35.",
+      "tags": ["project", "time", "film"]
+    },
+    {
+      "className": "Project",
+      "member": "framesCountType",
+      "signature": "",
+      "returnType": "FramesCountType enum",
+      "description": "How frames are counted (start from 0 or 1).",
+      "notes": "Read/write. FC_START_0, FC_START_1, FC_TIMECODE_CONVERSION.",
+      "tags": ["project", "time", "frames"]
+    },
+    {
+      "className": "Project",
+      "member": "footageTimecodeDisplayStartType",
+      "signature": "",
+      "returnType": "FootageTimecodeDisplayStartType enum",
+      "description": "Controls start-time display for footage items.",
+      "notes": "Read/write.",
+      "tags": ["project", "time", "timecode", "footage"]
+    },
+    {
+      "className": "Project",
+      "member": "gpuAccelType",
+      "signature": "",
+      "returnType": "GpuAccelType enum",
+      "description": "Current GPU acceleration type.",
+      "notes": "Read/write. Check app.availableGPUAccelTypes for valid values.",
+      "tags": ["project", "gpu", "acceleration", "performance"]
+    },
+    {
+      "className": "Project",
+      "member": "save",
+      "signature": "(file)",
+      "returnType": "void",
+      "description": "Saves the project. If file is provided, saves to that location.",
+      "notes": "file: File object (optional). If omitted, saves to current location.",
+      "tags": ["project", "save", "file"]
+    },
+    {
+      "className": "Project",
+      "member": "close",
+      "signature": "(closeOptions)",
+      "returnType": "Boolean",
+      "description": "Closes the project.",
+      "notes": "closeOptions: CloseOptions enum (DO_NOT_SAVE_CHANGES, PROMPT_TO_SAVE_CHANGES, SAVE_CHANGES).",
+      "tags": ["project", "close"]
+    },
+    {
+      "className": "Project",
+      "member": "importFile",
+      "signature": "(importOptions)",
+      "returnType": "FootageItem",
+      "description": "Imports a file into the project.",
+      "notes": "importOptions: ImportOptions object. Returns the new FootageItem.",
+      "tags": ["project", "import", "file", "footage"]
+    },
+    {
+      "className": "Project",
+      "member": "importFileWithDialog",
+      "signature": "()",
+      "returnType": "Array of Item",
+      "description": "Opens the Import File dialog.",
+      "notes": "Returns array of imported items, or null if user cancels.",
+      "tags": ["project", "import", "dialog"]
+    },
+    {
+      "className": "Project",
+      "member": "importPlaceholder",
+      "signature": "(name, width, height, frameRate, duration)",
+      "returnType": "PlaceholderItem",
+      "description": "Creates a placeholder in the project.",
+      "notes": "All parameters required.",
+      "tags": ["project", "import", "placeholder"]
+    },
+    {
+      "className": "Project",
+      "member": "item",
+      "signature": "(index)",
+      "returnType": "Item",
+      "description": "Gets the item at the specified index.",
+      "notes": "index: Integer (1-based, 1 to numItems).",
+      "tags": ["project", "item", "index"]
+    },
+    {
+      "className": "Project",
+      "member": "consolidateFootage",
+      "signature": "()",
+      "returnType": "Integer",
+      "description": "Consolidates duplicate footage sources.",
+      "notes": "Returns number of items removed.",
+      "tags": ["project", "footage", "consolidate", "optimize"]
+    },
+    {
+      "className": "Project",
+      "member": "removeUnusedFootage",
+      "signature": "()",
+      "returnType": "Integer",
+      "description": "Removes footage items not used in any composition.",
+      "notes": "Returns number of items removed.",
+      "tags": ["project", "footage", "remove", "unused", "cleanup"]
+    },
+    {
+      "className": "Project",
+      "member": "reduceProject",
+      "signature": "(array_of_items)",
+      "returnType": "Integer",
+      "description": "Reduces the project to only the specified items and their dependencies.",
+      "notes": "array_of_items: Array of Item objects to keep. Returns number of items removed.",
+      "tags": ["project", "reduce", "cleanup"]
+    },
+    {
+      "className": "Project",
+      "member": "showWindow",
+      "signature": "(doShow)",
+      "returnType": "void",
+      "description": "Shows or hides the Project panel.",
+      "notes": "doShow: Boolean.",
+      "tags": ["project", "window", "panel"]
+    },
+    {
+      "className": "Project",
+      "member": "autoFixExpressions",
+      "signature": "(oldText, newText)",
+      "returnType": "void",
+      "description": "Automatically replaces text in all expressions in the project.",
+      "notes": "Useful after renaming layers or compositions that are referenced in expressions.",
+      "tags": ["project", "expressions", "fix", "replace"]
+    },
+    {
+      "className": "CompItem",
+      "member": "numLayers",
+      "signature": "",
+      "returnType": "Integer",
+      "description": "Number of layers in the composition.",
+      "notes": "Read-only.",
+      "tags": ["comp", "composition", "layers", "count"]
+    },
+    {
+      "className": "CompItem",
+      "member": "layers",
+      "signature": "",
+      "returnType": "LayerCollection",
+      "description": "The layers in this composition.",
+      "notes": "Read-only. Access layers by index (1-based) or name.",
+      "tags": ["comp", "composition", "layers", "collection"]
+    },
+    {
+      "className": "CompItem",
+      "member": "activeCamera",
+      "signature": "",
+      "returnType": "CameraLayer",
+      "description": "The active camera layer at the current time.",
+      "notes": "Read-only. Null if no camera or if 2D comp.",
+      "tags": ["comp", "composition", "camera", "active"]
+    },
+    {
+      "className": "CompItem",
+      "member": "width",
+      "signature": "",
+      "returnType": "Integer",
+      "description": "Width of the composition in pixels.",
+      "notes": "Read/write.",
+      "tags": ["comp", "composition", "width", "size", "dimensions"]
+    },
+    {
+      "className": "CompItem",
+      "member": "height",
+      "signature": "",
+      "returnType": "Integer",
+      "description": "Height of the composition in pixels.",
+      "notes": "Read/write.",
+      "tags": ["comp", "composition", "height", "size", "dimensions"]
+    },
+    {
+      "className": "CompItem",
+      "member": "pixelAspect",
+      "signature": "",
+      "returnType": "Float",
+      "description": "Pixel aspect ratio of the composition.",
+      "notes": "Read/write. 1.0 for square pixels.",
+      "tags": ["comp", "composition", "pixel", "aspect"]
+    },
+    {
+      "className": "CompItem",
+      "member": "frameRate",
+      "signature": "",
+      "returnType": "Float",
+      "description": "Frame rate of the composition in frames per second.",
+      "notes": "Read/write.",
+      "tags": ["comp", "composition", "framerate", "fps"]
+    },
+    {
+      "className": "CompItem",
+      "member": "duration",
+      "signature": "",
+      "returnType": "Float",
+      "description": "Duration of the composition in seconds.",
+      "notes": "Read/write.",
+      "tags": ["comp", "composition", "duration", "time", "length"]
+    },
+    {
+      "className": "CompItem",
+      "member": "workAreaStart",
+      "signature": "",
+      "returnType": "Float",
+      "description": "Start time of the work area in seconds.",
+      "notes": "Read/write.",
+      "tags": ["comp", "composition", "workarea", "time"]
+    },
+    {
+      "className": "CompItem",
+      "member": "workAreaDuration",
+      "signature": "",
+      "returnType": "Float",
+      "description": "Duration of the work area in seconds.",
+      "notes": "Read/write.",
+      "tags": ["comp", "composition", "workarea", "duration"]
+    },
+    {
+      "className": "CompItem",
+      "member": "displayStartTime",
+      "signature": "",
+      "returnType": "Float",
+      "description": "Start time displayed in the comp panel in seconds.",
+      "notes": "Read/write.",
+      "tags": ["comp", "composition", "time", "display"]
+    },
+    {
+      "className": "CompItem",
+      "member": "displayStartFrame",
+      "signature": "",
+      "returnType": "Integer",
+      "description": "Start frame number for display purposes.",
+      "notes": "Read/write.",
+      "tags": ["comp", "composition", "frame", "display"]
+    },
+    {
+      "className": "CompItem",
+      "member": "shutterAngle",
+      "signature": "",
+      "returnType": "Integer",
+      "description": "Shutter angle for motion blur in degrees (0-720).",
+      "notes": "Read/write.",
+      "tags": ["comp", "composition", "motionblur", "shutter"]
+    },
+    {
+      "className": "CompItem",
+      "member": "shutterPhase",
+      "signature": "",
+      "returnType": "Integer",
+      "description": "Shutter phase for motion blur in degrees (-360 to 360).",
+      "notes": "Read/write.",
+      "tags": ["comp", "composition", "motionblur", "shutter"]
+    },
+    {
+      "className": "CompItem",
+      "member": "motionBlur",
+      "signature": "",
+      "returnType": "Boolean",
+      "description": "True if motion blur is enabled for the composition.",
+      "notes": "Read/write.",
+      "tags": ["comp", "composition", "motionblur"]
+    },
+    {
+      "className": "CompItem",
+      "member": "motionBlurSamplesPerFrame",
+      "signature": "",
+      "returnType": "Integer",
+      "description": "Number of motion blur samples per frame.",
+      "notes": "Read/write.",
+      "tags": ["comp", "composition", "motionblur", "samples"]
+    },
+    {
+      "className": "CompItem",
+      "member": "motionBlurAdaptiveSampleLimit",
+      "signature": "",
+      "returnType": "Integer",
+      "description": "Adaptive sample limit for motion blur.",
+      "notes": "Read/write.",
+      "tags": ["comp", "composition", "motionblur", "adaptive"]
+    },
+    {
+      "className": "CompItem",
+      "member": "preserveNestedFrameRate",
+      "signature": "",
+      "returnType": "Boolean",
+      "description": "True if nested composition frame rates are preserved.",
+      "notes": "Read/write.",
+      "tags": ["comp", "composition", "nested", "framerate"]
+    },
+    {
+      "className": "CompItem",
+      "member": "preserveNestedResolution",
+      "signature": "",
+      "returnType": "Boolean",
+      "description": "True if nested composition resolution is preserved.",
+      "notes": "Read/write.",
+      "tags": ["comp", "composition", "nested", "resolution"]
+    },
+    {
+      "className": "CompItem",
+      "member": "bgColor",
+      "signature": "",
+      "returnType": "Array [R,G,B]",
+      "description": "Background color of the composition as [R,G,B] array (0-1).",
+      "notes": "Read/write. Values are floats from 0.0 to 1.0.",
+      "tags": ["comp", "composition", "background", "color"]
+    },
+    {
+      "className": "CompItem",
+      "member": "resolutionFactor",
+      "signature": "",
+      "returnType": "Array [x,y]",
+      "description": "Render resolution factor [x,y].",
+      "notes": "Read/write. [1,1] = Full, [2,2] = Half, [4,4] = Quarter.",
+      "tags": ["comp", "composition", "resolution", "render"]
+    },
+    {
+      "className": "CompItem",
+      "member": "renderer",
+      "signature": "",
+      "returnType": "String",
+      "description": "Current renderer used for the composition.",
+      "notes": "Read/write. Check renderers property for valid values.",
+      "tags": ["comp", "composition", "renderer", "3d"]
+    },
+    {
+      "className": "CompItem",
+      "member": "renderers",
+      "signature": "",
+      "returnType": "Array of String",
+      "description": "List of available renderers for this composition.",
+      "notes": "Read-only.",
+      "tags": ["comp", "composition", "renderers", "3d"]
+    },
+    {
+      "className": "CompItem",
+      "member": "selectedLayers",
+      "signature": "",
+      "returnType": "Array of Layer",
+      "description": "Array of currently selected layers in the composition.",
+      "notes": "Read-only.",
+      "tags": ["comp", "composition", "selection", "layers", "selected"]
+    },
+    {
+      "className": "CompItem",
+      "member": "selectedProperties",
+      "signature": "",
+      "returnType": "Array of PropertyBase",
+      "description": "Array of selected properties across all layers.",
+      "notes": "Read-only.",
+      "tags": ["comp", "composition", "selection", "properties"]
+    },
+    {
+      "className": "CompItem",
+      "member": "layer",
+      "signature": "(indexOrName)",
+      "returnType": "Layer",
+      "description": "Gets a layer by 1-based index or by name string.",
+      "notes": "Returns the Layer object. Throws error if not found.",
+      "tags": ["comp", "composition", "layer", "get", "find"]
+    },
+    {
+      "className": "CompItem",
+      "member": "openInViewer",
+      "signature": "()",
+      "returnType": "Viewer",
+      "description": "Opens the composition in a Viewer panel.",
+      "notes": "Returns the Viewer object, or null if it cannot be opened.",
+      "tags": ["comp", "composition", "viewer", "open"]
+    },
+    {
+      "className": "CompItem",
+      "member": "duplicate",
+      "signature": "()",
+      "returnType": "CompItem",
+      "description": "Duplicates the composition.",
+      "notes": "Returns the new CompItem.",
+      "tags": ["comp", "composition", "duplicate", "copy"]
+    },
+    {
+      "className": "CompItem",
+      "member": "time",
+      "signature": "",
+      "returnType": "Float",
+      "description": "Current time of the comp's time indicator in seconds.",
+      "notes": "Read/write.",
+      "tags": ["comp", "composition", "time", "current", "playhead"]
+    },
+    {
+      "className": "LayerCollection",
+      "member": "addNull",
+      "signature": "(duration)",
+      "returnType": "AVLayer",
+      "description": "Adds a null object layer to the composition.",
+      "notes": "duration: Float (optional, defaults to comp duration). Creates a 100x100 pixel null layer.",
+      "tags": ["layer", "null", "add", "create"]
+    },
+    {
+      "className": "LayerCollection",
+      "member": "addSolid",
+      "signature": "(color, name, width, height, pixelAspect, duration)",
+      "returnType": "AVLayer",
+      "description": "Adds a solid color layer.",
+      "notes": "color: [R,G,B] (0-1). name: String. width/height: Integer. pixelAspect: Float. duration: Float (optional).",
+      "tags": ["layer", "solid", "add", "create", "color"]
+    },
+    {
+      "className": "LayerCollection",
+      "member": "addText",
+      "signature": "(sourceText)",
+      "returnType": "TextLayer",
+      "description": "Adds a text layer.",
+      "notes": "sourceText: String or TextDocument (optional). Empty string if omitted.",
+      "tags": ["layer", "text", "add", "create"]
+    },
+    {
+      "className": "LayerCollection",
+      "member": "addShape",
+      "signature": "()",
+      "returnType": "ShapeLayer",
+      "description": "Adds a new empty shape layer.",
+      "notes": "Returns the new ShapeLayer.",
+      "tags": ["layer", "shape", "add", "create"]
+    },
+    {
+      "className": "LayerCollection",
+      "member": "addCamera",
+      "signature": "(name, centerPoint)",
+      "returnType": "CameraLayer",
+      "description": "Adds a camera layer.",
+      "notes": "name: String. centerPoint: [x,y] (typically [comp.width/2, comp.height/2]).",
+      "tags": ["layer", "camera", "add", "create", "3d"]
+    },
+    {
+      "className": "LayerCollection",
+      "member": "addLight",
+      "signature": "(name, centerPoint)",
+      "returnType": "LightLayer",
+      "description": "Adds a light layer.",
+      "notes": "name: String. centerPoint: [x,y].",
+      "tags": ["layer", "light", "add", "create", "3d"]
+    },
+    {
+      "className": "LayerCollection",
+      "member": "addBoxText",
+      "signature": "(sourceText, boxSize)",
+      "returnType": "TextLayer",
+      "description": "Adds a box (paragraph) text layer.",
+      "notes": "sourceText: String or TextDocument. boxSize: [width, height] in pixels.",
+      "tags": ["layer", "text", "box", "paragraph", "add", "create"]
+    },
+    {
+      "className": "LayerCollection",
+      "member": "byName",
+      "signature": "(name)",
+      "returnType": "Layer",
+      "description": "Returns the first layer with the given name.",
+      "notes": "name: String. Returns null if not found.",
+      "tags": ["layer", "find", "name", "search"]
+    },
+    {
+      "className": "LayerCollection",
+      "member": "precompose",
+      "signature": "(layerIndices, name, moveAllAttributes)",
+      "returnType": "CompItem",
+      "description": "Pre-composes the specified layers into a new composition.",
+      "notes": "layerIndices: Array of 1-based indices. name: String for new comp. moveAllAttributes: Boolean (true moves all attributes to new comp).",
+      "tags": ["layer", "precompose", "composition", "create"]
+    },
+    {
+      "className": "AVLayer",
+      "member": "source",
+      "signature": "",
+      "returnType": "AVItem",
+      "description": "The source item for this layer.",
+      "notes": "Read-only.",
+      "tags": ["layer", "source", "footage", "item"]
+    },
+    {
+      "className": "AVLayer",
+      "member": "isNameFromSource",
+      "signature": "",
+      "returnType": "Boolean",
+      "description": "True if the layer name comes from its source item.",
+      "notes": "Read-only.",
+      "tags": ["layer", "name", "source"]
+    },
+    {
+      "className": "AVLayer",
+      "member": "height",
+      "signature": "",
+      "returnType": "Integer",
+      "description": "Height of the source in pixels.",
+      "notes": "Read-only.",
+      "tags": ["layer", "height", "size"]
+    },
+    {
+      "className": "AVLayer",
+      "member": "width",
+      "signature": "",
+      "returnType": "Integer",
+      "description": "Width of the source in pixels.",
+      "notes": "Read-only.",
+      "tags": ["layer", "width", "size"]
+    },
+    {
+      "className": "AVLayer",
+      "member": "audioEnabled",
+      "signature": "",
+      "returnType": "Boolean",
+      "description": "True if audio is enabled for this layer.",
+      "notes": "Read/write.",
+      "tags": ["layer", "audio", "enabled"]
+    },
+    {
+      "className": "AVLayer",
+      "member": "audioActive",
+      "signature": "",
+      "returnType": "Boolean",
+      "description": "True if audio is active at the current time.",
+      "notes": "Read-only. Depends on audioEnabled, solo, mute states.",
+      "tags": ["layer", "audio", "active"]
+    },
+    {
+      "className": "AVLayer",
+      "member": "blendingMode",
+      "signature": "",
+      "returnType": "BlendingMode enum",
+      "description": "The blending mode for this layer.",
+      "notes": "Read/write. Values: BlendingMode.ADD, MULTIPLY, SCREEN, NORMAL, etc.",
+      "tags": ["layer", "blending", "mode", "blend"]
+    },
+    {
+      "className": "AVLayer",
+      "member": "canSetCollapseTransformation",
+      "signature": "",
+      "returnType": "Boolean",
+      "description": "True if collapse transformation can be enabled.",
+      "notes": "Read-only.",
+      "tags": ["layer", "collapse", "transform"]
+    },
+    {
+      "className": "AVLayer",
+      "member": "collapseTransformation",
+      "signature": "",
+      "returnType": "Boolean",
+      "description": "True if collapse transformation / continuously rasterize is on.",
+      "notes": "Read/write.",
+      "tags": ["layer", "collapse", "rasterize", "transform"]
+    },
+    {
+      "className": "AVLayer",
+      "member": "effectsActive",
+      "signature": "",
+      "returnType": "Boolean",
+      "description": "True if effects are active on this layer.",
+      "notes": "Read/write.",
+      "tags": ["layer", "effects", "active"]
+    },
+    {
+      "className": "AVLayer",
+      "member": "environmentLayer",
+      "signature": "",
+      "returnType": "Boolean",
+      "description": "True if this is an environment layer.",
+      "notes": "Read/write.",
+      "tags": ["layer", "environment", "3d"]
+    },
+    {
+      "className": "AVLayer",
+      "member": "frameBlending",
+      "signature": "",
+      "returnType": "Boolean",
+      "description": "True if frame blending is enabled.",
+      "notes": "Read-only.",
+      "tags": ["layer", "frameblending"]
+    },
+    {
+      "className": "AVLayer",
+      "member": "frameBlendingType",
+      "signature": "",
+      "returnType": "FrameBlendingType enum",
+      "description": "Frame blending type (NO_FRAME_BLEND, FRAME_MIX, PIXEL_MOTION).",
+      "notes": "Read/write.",
+      "tags": ["layer", "frameblending", "type"]
+    },
+    {
+      "className": "AVLayer",
+      "member": "guideLayer",
+      "signature": "",
+      "returnType": "Boolean",
+      "description": "True if this is a guide layer (visible only in this comp).",
+      "notes": "Read/write.",
+      "tags": ["layer", "guide"]
+    },
+    {
+      "className": "AVLayer",
+      "member": "hasTrackMatte",
+      "signature": "",
+      "returnType": "Boolean",
+      "description": "True if this layer has a track matte.",
+      "notes": "Read-only.",
+      "tags": ["layer", "trackmatte"]
+    },
+    {
+      "className": "AVLayer",
+      "member": "isTrackMatte",
+      "signature": "",
+      "returnType": "Boolean",
+      "description": "True if this layer is being used as a track matte.",
+      "notes": "Read-only.",
+      "tags": ["layer", "trackmatte"]
+    },
+    {
+      "className": "AVLayer",
+      "member": "trackMatteType",
+      "signature": "",
+      "returnType": "TrackMatteType enum",
+      "description": "The track matte type applied to this layer.",
+      "notes": "Read/write. ALPHA, ALPHA_INVERTED, LUMA, LUMA_INVERTED, NO_TRACK_MATTE.",
+      "tags": ["layer", "trackmatte", "alpha", "luma"]
+    },
+    {
+      "className": "AVLayer",
+      "member": "motionBlur",
+      "signature": "",
+      "returnType": "Boolean",
+      "description": "True if motion blur is enabled for this layer.",
+      "notes": "Read/write. Comp-level motionBlur must also be enabled.",
+      "tags": ["layer", "motionblur"]
+    },
+    {
+      "className": "AVLayer",
+      "member": "preserveTransparency",
+      "signature": "",
+      "returnType": "Boolean",
+      "description": "True if preserve transparency is enabled.",
+      "notes": "Read/write.",
+      "tags": ["layer", "transparency", "preserve"]
+    },
+    {
+      "className": "AVLayer",
+      "member": "quality",
+      "signature": "",
+      "returnType": "LayerQuality enum",
+      "description": "Rendering quality of the layer.",
+      "notes": "Read/write. BEST, DRAFT, WIREFRAME.",
+      "tags": ["layer", "quality", "render"]
+    },
+    {
+      "className": "AVLayer",
+      "member": "samplingQuality",
+      "signature": "",
+      "returnType": "LayerSamplingQuality enum",
+      "description": "Sampling quality (bicubic or bilinear).",
+      "notes": "Read/write.",
+      "tags": ["layer", "sampling", "quality"]
+    },
+    {
+      "className": "AVLayer",
+      "member": "threeDLayer",
+      "signature": "",
+      "returnType": "Boolean",
+      "description": "True if this is a 3D layer.",
+      "notes": "Read/write. Enabling 3D adds Z-axis transform properties.",
+      "tags": ["layer", "3d", "three", "dimensional"]
+    },
+    {
+      "className": "AVLayer",
+      "member": "threeDPerChar",
+      "signature": "",
+      "returnType": "Boolean",
+      "description": "True if per-character 3D is enabled (text layers).",
+      "notes": "Read/write.",
+      "tags": ["layer", "3d", "text", "character"]
+    },
+    {
+      "className": "AVLayer",
+      "member": "timeRemapEnabled",
+      "signature": "",
+      "returnType": "Boolean",
+      "description": "True if time remapping is enabled.",
+      "notes": "Read/write.",
+      "tags": ["layer", "timeremap", "time"]
+    },
+    {
+      "className": "AVLayer",
+      "member": "canSetTimeRemapEnabled",
+      "signature": "",
+      "returnType": "Boolean",
+      "description": "True if time remapping can be enabled.",
+      "notes": "Read-only. False for still images.",
+      "tags": ["layer", "timeremap"]
+    },
+    {
+      "className": "AVLayer",
+      "member": "adjustmentLayer",
+      "signature": "",
+      "returnType": "Boolean",
+      "description": "True if this is an adjustment layer.",
+      "notes": "Read/write.",
+      "tags": ["layer", "adjustment"]
+    },
+    {
+      "className": "AVLayer",
+      "member": "autoOrient",
+      "signature": "",
+      "returnType": "AutoOrientType enum",
+      "description": "Auto-orientation mode.",
+      "notes": "Read/write. ALONG_PATH, CAMERA_OR_POINT_OF_INTEREST, NO_AUTO_ORIENT.",
+      "tags": ["layer", "orientation", "auto", "path"]
+    },
+    {
+      "className": "AVLayer",
+      "member": "replaceSource",
+      "signature": "(newSource, fixExpressions)",
+      "returnType": "void",
+      "description": "Replaces the source item for this layer.",
+      "notes": "newSource: AVItem. fixExpressions: Boolean. Set fixExpressions to true to update expression references.",
+      "tags": ["layer", "source", "replace"]
+    },
+    {
+      "className": "AVLayer",
+      "member": "sourceRectAtTime",
+      "signature": "(timeT, extents)",
+      "returnType": "Object {top, left, width, height}",
+      "description": "Gets the bounding rectangle of the layer content at a specific time.",
+      "notes": "timeT: Float (seconds). extents: Boolean. Essential for text/shape layers to get actual content bounds.",
+      "tags": ["layer", "bounds", "rect", "size", "text", "shape"]
+    },
+    {
+      "className": "AVLayer",
+      "member": "sourcePointToComp",
+      "signature": "(point)",
+      "returnType": "Array [x,y]",
+      "description": "Converts layer coordinates to composition coordinates.",
+      "notes": "point: Array [x,y]. Accounts for transforms.",
+      "tags": ["layer", "coordinates", "convert", "transform"]
+    },
+    {
+      "className": "AVLayer",
+      "member": "compPointToSource",
+      "signature": "(point)",
+      "returnType": "Array [x,y]",
+      "description": "Converts composition coordinates to layer coordinates.",
+      "notes": "point: Array [x,y]. Inverse of sourcePointToComp.",
+      "tags": ["layer", "coordinates", "convert", "transform"]
+    },
+    {
+      "className": "AVLayer",
+      "member": "openInViewer",
+      "signature": "()",
+      "returnType": "Viewer",
+      "description": "Opens the layer in a Layer panel.",
+      "notes": "Returns Viewer object or null.",
+      "tags": ["layer", "viewer", "open"]
+    },
+    {
+      "className": "Layer",
+      "member": "index",
+      "signature": "",
+      "returnType": "Integer",
+      "description": "The 1-based index of this layer in the composition.",
+      "notes": "Read-only.",
+      "tags": ["layer", "index", "position"]
+    },
+    {
+      "className": "Layer",
+      "member": "name",
+      "signature": "",
+      "returnType": "String",
+      "description": "The name of this layer.",
+      "notes": "Read/write.",
+      "tags": ["layer", "name"]
+    },
+    {
+      "className": "Layer",
+      "member": "enabled",
+      "signature": "",
+      "returnType": "Boolean",
+      "description": "True if the layer is enabled (eye icon on).",
+      "notes": "Read/write. Corresponds to the visibility toggle.",
+      "tags": ["layer", "enabled", "visible", "visibility"]
+    },
+    {
+      "className": "Layer",
+      "member": "solo",
+      "signature": "",
+      "returnType": "Boolean",
+      "description": "True if the layer is soloed.",
+      "notes": "Read/write.",
+      "tags": ["layer", "solo"]
+    },
+    {
+      "className": "Layer",
+      "member": "shy",
+      "signature": "",
+      "returnType": "Boolean",
+      "description": "True if the layer is shy (hidden when shy mode is on).",
+      "notes": "Read/write.",
+      "tags": ["layer", "shy", "hidden"]
+    },
+    {
+      "className": "Layer",
+      "member": "locked",
+      "signature": "",
+      "returnType": "Boolean",
+      "description": "True if the layer is locked.",
+      "notes": "Read/write.",
+      "tags": ["layer", "locked", "lock"]
+    },
+    {
+      "className": "Layer",
+      "member": "comment",
+      "signature": "",
+      "returnType": "String",
+      "description": "Comment text for the layer.",
+      "notes": "Read/write.",
+      "tags": ["layer", "comment", "note"]
+    },
+    {
+      "className": "Layer",
+      "member": "label",
+      "signature": "",
+      "returnType": "Integer",
+      "description": "Label color index (0-16).",
+      "notes": "Read/write.",
+      "tags": ["layer", "label", "color"]
+    },
+    {
+      "className": "Layer",
+      "member": "containingComp",
+      "signature": "",
+      "returnType": "CompItem",
+      "description": "The composition that contains this layer.",
+      "notes": "Read-only.",
+      "tags": ["layer", "comp", "parent"]
+    },
+    {
+      "className": "Layer",
+      "member": "parent",
+      "signature": "",
+      "returnType": "Layer",
+      "description": "The parent layer (for parenting/hierarchy).",
+      "notes": "Read/write. Null if no parent. Set to null to unparent.",
+      "tags": ["layer", "parent", "hierarchy", "parenting"]
+    },
+    {
+      "className": "Layer",
+      "member": "inPoint",
+      "signature": "",
+      "returnType": "Float",
+      "description": "In-point of the layer in composition time (seconds).",
+      "notes": "Read/write.",
+      "tags": ["layer", "inpoint", "time", "trim"]
+    },
+    {
+      "className": "Layer",
+      "member": "outPoint",
+      "signature": "",
+      "returnType": "Float",
+      "description": "Out-point of the layer in composition time (seconds).",
+      "notes": "Read/write.",
+      "tags": ["layer", "outpoint", "time", "trim"]
+    },
+    {
+      "className": "Layer",
+      "member": "startTime",
+      "signature": "",
+      "returnType": "Float",
+      "description": "Start time of the layer in composition time (seconds).",
+      "notes": "Read/write. Changing this shifts the layer in time.",
+      "tags": ["layer", "starttime", "time", "offset"]
+    },
+    {
+      "className": "Layer",
+      "member": "stretch",
+      "signature": "",
+      "returnType": "Float",
+      "description": "Time stretch percentage (100 = normal, 200 = half speed, 50 = double speed).",
+      "notes": "Read/write.",
+      "tags": ["layer", "stretch", "time", "speed"]
+    },
+    {
+      "className": "Layer",
+      "member": "selectedProperties",
+      "signature": "",
+      "returnType": "Array of PropertyBase",
+      "description": "Array of currently selected properties on this layer.",
+      "notes": "Read-only.",
+      "tags": ["layer", "selection", "properties"]
+    },
+    {
+      "className": "Layer",
+      "member": "remove",
+      "signature": "()",
+      "returnType": "void",
+      "description": "Removes the layer from the composition.",
+      "notes": "",
+      "tags": ["layer", "remove", "delete"]
+    },
+    {
+      "className": "Layer",
+      "member": "duplicate",
+      "signature": "()",
+      "returnType": "Layer",
+      "description": "Duplicates this layer.",
+      "notes": "Returns the new Layer.",
+      "tags": ["layer", "duplicate", "copy"]
+    },
+    {
+      "className": "Layer",
+      "member": "copyToComp",
+      "signature": "(intoComp)",
+      "returnType": "void",
+      "description": "Copies this layer into another composition.",
+      "notes": "intoComp: CompItem.",
+      "tags": ["layer", "copy", "comp"]
+    },
+    {
+      "className": "Layer",
+      "member": "moveToBeginning",
+      "signature": "()",
+      "returnType": "void",
+      "description": "Moves the layer to the top of the layer stack (index 1).",
+      "notes": "",
+      "tags": ["layer", "move", "order", "stack"]
+    },
+    {
+      "className": "Layer",
+      "member": "moveToEnd",
+      "signature": "()",
+      "returnType": "void",
+      "description": "Moves the layer to the bottom of the layer stack.",
+      "notes": "",
+      "tags": ["layer", "move", "order", "stack"]
+    },
+    {
+      "className": "Layer",
+      "member": "moveAfter",
+      "signature": "(layer)",
+      "returnType": "void",
+      "description": "Moves this layer to be after (below) the specified layer.",
+      "notes": "layer: Layer object.",
+      "tags": ["layer", "move", "order", "stack"]
+    },
+    {
+      "className": "Layer",
+      "member": "moveBefore",
+      "signature": "(layer)",
+      "returnType": "void",
+      "description": "Moves this layer to be before (above) the specified layer.",
+      "notes": "layer: Layer object.",
+      "tags": ["layer", "move", "order", "stack"]
+    },
+    {
+      "className": "Layer",
+      "member": "setParentWithJump",
+      "signature": "(newParent)",
+      "returnType": "void",
+      "description": "Sets parent layer while preserving the layer's visual position.",
+      "notes": "newParent: Layer or null. Adjusts transform to compensate for new parent.",
+      "tags": ["layer", "parent", "hierarchy", "position"]
+    },
+    {
+      "className": "Layer",
+      "member": "property",
+      "signature": "(propertyName)",
+      "returnType": "PropertyBase",
+      "description": "Gets a property by name or match name.",
+      "notes": "propertyName: String. Use matchNames for reliable access (e.g., 'ADBE Transform Group').",
+      "tags": ["layer", "property", "get", "matchname"]
+    },
+    {
+      "className": "Layer",
+      "member": "activeAtTime",
+      "signature": "(time)",
+      "returnType": "Boolean",
+      "description": "True if the layer is active at the specified time.",
+      "notes": "time: Float (seconds). Considers inPoint, outPoint, and enabled state.",
+      "tags": ["layer", "active", "time"]
+    },
+    {
+      "className": "Property",
+      "member": "value",
+      "signature": "",
+      "returnType": "varies",
+      "description": "The current value of the property (post-expression).",
+      "notes": "Read-only. Type depends on propertyValueType. Use setValue() to change.",
+      "tags": ["property", "value", "current"]
+    },
+    {
+      "className": "Property",
+      "member": "numKeys",
+      "signature": "",
+      "returnType": "Integer",
+      "description": "Number of keyframes on this property.",
+      "notes": "Read-only. 0 if not keyframed.",
+      "tags": ["property", "keyframe", "count"]
+    },
+    {
+      "className": "Property",
+      "member": "expression",
+      "signature": "",
+      "returnType": "String",
+      "description": "The expression string for this property.",
+      "notes": "Read/write if canSetExpression is true.",
+      "tags": ["property", "expression"]
+    },
+    {
+      "className": "Property",
+      "member": "expressionEnabled",
+      "signature": "",
+      "returnType": "Boolean",
+      "description": "True if the expression is enabled.",
+      "notes": "Read/write.",
+      "tags": ["property", "expression", "enabled"]
+    },
+    {
+      "className": "Property",
+      "member": "expressionError",
+      "signature": "",
+      "returnType": "String",
+      "description": "Error message from expression evaluation. Empty if no error.",
+      "notes": "Read-only.",
+      "tags": ["property", "expression", "error"]
+    },
+    {
+      "className": "Property",
+      "member": "canSetExpression",
+      "signature": "",
+      "returnType": "Boolean",
+      "description": "True if an expression can be set on this property.",
+      "notes": "Read-only.",
+      "tags": ["property", "expression"]
+    },
+    {
+      "className": "Property",
+      "member": "canVaryOverTime",
+      "signature": "",
+      "returnType": "Boolean",
+      "description": "True if this property can be keyframed.",
+      "notes": "Read-only.",
+      "tags": ["property", "keyframe", "animate"]
+    },
+    {
+      "className": "Property",
+      "member": "isSpatial",
+      "signature": "",
+      "returnType": "Boolean",
+      "description": "True if property defines a spatial value (has motion path).",
+      "notes": "Read-only.",
+      "tags": ["property", "spatial", "motion"]
+    },
+    {
+      "className": "Property",
+      "member": "isTimeVarying",
+      "signature": "",
+      "returnType": "Boolean",
+      "description": "True if the property varies over time (keyframes or expression).",
+      "notes": "Read-only.",
+      "tags": ["property", "keyframe", "expression", "animate"]
+    },
+    {
+      "className": "Property",
+      "member": "propertyValueType",
+      "signature": "",
+      "returnType": "PropertyValueType enum",
+      "description": "The type of value stored in this property.",
+      "notes": "Read-only. NO_VALUE, OneD, TwoD, TwoD_SPATIAL, ThreeD, ThreeD_SPATIAL, COLOR, TEXT_DOCUMENT, MARKER, SHAPE, etc.",
+      "tags": ["property", "type", "value"]
+    },
+    {
+      "className": "Property",
+      "member": "dimensionsSeparated",
+      "signature": "",
+      "returnType": "Boolean",
+      "description": "True if multidimensional property is separated into individual dimensions.",
+      "notes": "Read/write. Only for properties that support separation (like Position).",
+      "tags": ["property", "dimensions", "separate", "position"]
+    },
+    {
+      "className": "Property",
+      "member": "hasMin",
+      "signature": "",
+      "returnType": "Boolean",
+      "description": "True if this property has a minimum value.",
+      "notes": "Read-only.",
+      "tags": ["property", "minimum", "range"]
+    },
+    {
+      "className": "Property",
+      "member": "hasMax",
+      "signature": "",
+      "returnType": "Boolean",
+      "description": "True if this property has a maximum value.",
+      "notes": "Read-only.",
+      "tags": ["property", "maximum", "range"]
+    },
+    {
+      "className": "Property",
+      "member": "minValue",
+      "signature": "",
+      "returnType": "Float",
+      "description": "Minimum permitted value.",
+      "notes": "Read-only. Only valid if hasMin is true.",
+      "tags": ["property", "minimum", "value"]
+    },
+    {
+      "className": "Property",
+      "member": "maxValue",
+      "signature": "",
+      "returnType": "Float",
+      "description": "Maximum permitted value.",
+      "notes": "Read-only. Only valid if hasMax is true.",
+      "tags": ["property", "maximum", "value"]
+    },
+    {
+      "className": "Property",
+      "member": "selectedKeys",
+      "signature": "",
+      "returnType": "Array of Integer",
+      "description": "Indices of currently selected keyframes.",
+      "notes": "Read-only.",
+      "tags": ["property", "keyframe", "selection"]
+    },
+    {
+      "className": "Property",
+      "member": "unitsText",
+      "signature": "",
+      "returnType": "String",
+      "description": "Text description of the property's units (e.g., 'Pixels', 'Percent').",
+      "notes": "Read-only.",
+      "tags": ["property", "units"]
+    },
+    {
+      "className": "Property",
+      "member": "setValue",
+      "signature": "(newValue)",
+      "returnType": "void",
+      "description": "Sets the static value of the property (removes all keyframes).",
+      "notes": "newValue type depends on propertyValueType. For position: [x,y] or [x,y,z].",
+      "tags": ["property", "value", "set", "static"]
+    },
+    {
+      "className": "Property",
+      "member": "setValueAtTime",
+      "signature": "(time, newValue)",
+      "returnType": "void",
+      "description": "Sets value at a specific time, creating a keyframe if needed.",
+      "notes": "time: Float (seconds). newValue: type depends on property.",
+      "tags": ["property", "keyframe", "value", "set", "animate", "time"]
+    },
+    {
+      "className": "Property",
+      "member": "setValuesAtTimes",
+      "signature": "(times, values)",
+      "returnType": "void",
+      "description": "Sets multiple keyframe values at once.",
+      "notes": "times: Array of Float. values: Array of values. Must have same length.",
+      "tags": ["property", "keyframe", "value", "set", "animate", "batch"]
+    },
+    {
+      "className": "Property",
+      "member": "valueAtTime",
+      "signature": "(time, preExpression)",
+      "returnType": "varies",
+      "description": "Gets the value at a specific time.",
+      "notes": "time: Float. preExpression: Boolean (true = pre-expression value). Returns type based on propertyValueType.",
+      "tags": ["property", "value", "get", "time"]
+    },
+    {
+      "className": "Property",
+      "member": "addKey",
+      "signature": "(time)",
+      "returnType": "Integer",
+      "description": "Adds a keyframe at the specified time.",
+      "notes": "time: Float (seconds). Returns the 1-based keyframe index.",
+      "tags": ["property", "keyframe", "add", "create"]
+    },
+    {
+      "className": "Property",
+      "member": "removeKey",
+      "signature": "(keyIndex)",
+      "returnType": "void",
+      "description": "Removes the keyframe at the given index.",
+      "notes": "keyIndex: Integer (1-based).",
+      "tags": ["property", "keyframe", "remove", "delete"]
+    },
+    {
+      "className": "Property",
+      "member": "keyTime",
+      "signature": "(keyIndex)",
+      "returnType": "Float",
+      "description": "Returns the time of the keyframe at the given index.",
+      "notes": "keyIndex: Integer (1-based). Returns time in seconds.",
+      "tags": ["property", "keyframe", "time", "get"]
+    },
+    {
+      "className": "Property",
+      "member": "keyValue",
+      "signature": "(keyIndex)",
+      "returnType": "varies",
+      "description": "Returns the value of the keyframe at the given index.",
+      "notes": "keyIndex: Integer (1-based).",
+      "tags": ["property", "keyframe", "value", "get"]
+    },
+    {
+      "className": "Property",
+      "member": "nearestKeyIndex",
+      "signature": "(time)",
+      "returnType": "Integer",
+      "description": "Returns the index of the keyframe nearest to the given time.",
+      "notes": "time: Float (seconds). Returns 1-based index.",
+      "tags": ["property", "keyframe", "find", "nearest"]
+    },
+    {
+      "className": "Property",
+      "member": "setInterpolationTypeAtKey",
+      "signature": "(keyIndex, inType, outType)",
+      "returnType": "void",
+      "description": "Sets interpolation type at a keyframe.",
+      "notes": "keyIndex: Integer. inType/outType: KeyframeInterpolationType (LINEAR, BEZIER, HOLD).",
+      "tags": ["property", "keyframe", "interpolation", "ease", "bezier", "linear", "hold"]
+    },
+    {
+      "className": "Property",
+      "member": "setTemporalEaseAtKey",
+      "signature": "(keyIndex, inEase, outEase)",
+      "returnType": "void",
+      "description": "Sets temporal ease at a keyframe for smooth animation.",
+      "notes": "keyIndex: Integer. inEase/outEase: Array of KeyframeEase objects. One per dimension.",
+      "tags": ["property", "keyframe", "ease", "temporal", "smooth", "animation"]
+    },
+    {
+      "className": "Property",
+      "member": "setSpatialTangentsAtKey",
+      "signature": "(keyIndex, inTangent, outTangent)",
+      "returnType": "void",
+      "description": "Sets spatial tangent vectors for motion path at a keyframe.",
+      "notes": "For spatial properties only. inTangent/outTangent: [x,y] or [x,y,z].",
+      "tags": ["property", "keyframe", "spatial", "tangent", "motion", "path"]
+    },
+    {
+      "className": "Property",
+      "member": "setRovingAtKey",
+      "signature": "(keyIndex, newVal)",
+      "returnType": "void",
+      "description": "Turns roving on or off at a keyframe.",
+      "notes": "keyIndex: Integer. newVal: Boolean. Roving keys adjust timing for smooth motion.",
+      "tags": ["property", "keyframe", "roving", "motion"]
+    },
+    {
+      "className": "PropertyBase",
+      "member": "name",
+      "signature": "",
+      "returnType": "String",
+      "description": "Display name of the property.",
+      "notes": "Read/write for some (like effects and masks).",
+      "tags": ["property", "name"]
+    },
+    {
+      "className": "PropertyBase",
+      "member": "matchName",
+      "signature": "",
+      "returnType": "String",
+      "description": "Internal match name used by scripts to reliably reference properties.",
+      "notes": "Read-only. More reliable than display names which may be localized.",
+      "tags": ["property", "matchname", "internal"]
+    },
+    {
+      "className": "PropertyBase",
+      "member": "propertyType",
+      "signature": "",
+      "returnType": "PropertyType enum",
+      "description": "Whether this is a PROPERTY or INDEXED_GROUP or NAMED_GROUP.",
+      "notes": "Read-only. PROPERTY for leaf values, INDEXED_GROUP/NAMED_GROUP for groups.",
+      "tags": ["property", "type", "group"]
+    },
+    {
+      "className": "PropertyBase",
+      "member": "parentProperty",
+      "signature": "",
+      "returnType": "PropertyGroup",
+      "description": "The parent property group.",
+      "notes": "Read-only. Null for top-level properties.",
+      "tags": ["property", "parent", "group"]
+    },
+    {
+      "className": "PropertyBase",
+      "member": "isModified",
+      "signature": "",
+      "returnType": "Boolean",
+      "description": "True if the property has been modified from its default.",
+      "notes": "Read-only.",
+      "tags": ["property", "modified", "default"]
+    },
+    {
+      "className": "PropertyBase",
+      "member": "canSetEnabled",
+      "signature": "",
+      "returnType": "Boolean",
+      "description": "True if the enabled state can be set.",
+      "notes": "Read-only.",
+      "tags": ["property", "enabled"]
+    },
+    {
+      "className": "PropertyBase",
+      "member": "active",
+      "signature": "",
+      "returnType": "Boolean",
+      "description": "True if this property is active (enabled and not hidden).",
+      "notes": "Read-only.",
+      "tags": ["property", "active"]
+    },
+    {
+      "className": "PropertyBase",
+      "member": "isEffect",
+      "signature": "",
+      "returnType": "Boolean",
+      "description": "True if this property is an effect.",
+      "notes": "Read-only.",
+      "tags": ["property", "effect"]
+    },
+    {
+      "className": "PropertyBase",
+      "member": "isMask",
+      "signature": "",
+      "returnType": "Boolean",
+      "description": "True if this property is a mask.",
+      "notes": "Read-only.",
+      "tags": ["property", "mask"]
+    },
+    {
+      "className": "PropertyBase",
+      "member": "selected",
+      "signature": "",
+      "returnType": "Boolean",
+      "description": "True if this property is selected in the timeline.",
+      "notes": "Read/write.",
+      "tags": ["property", "selected"]
+    },
+    {
+      "className": "PropertyBase",
+      "member": "remove",
+      "signature": "()",
+      "returnType": "void",
+      "description": "Removes this property from its parent group.",
+      "notes": "Only works for user-added properties (effects, masks).",
+      "tags": ["property", "remove", "delete"]
+    },
+    {
+      "className": "PropertyBase",
+      "member": "moveTo",
+      "signature": "(newIndex)",
+      "returnType": "void",
+      "description": "Moves this property to a new index within its parent group.",
+      "notes": "newIndex: Integer (1-based).",
+      "tags": ["property", "move", "reorder"]
+    },
+    {
+      "className": "PropertyBase",
+      "member": "duplicate",
+      "signature": "()",
+      "returnType": "PropertyBase",
+      "description": "Duplicates this property.",
+      "notes": "Only for user-added properties. Returns the new PropertyBase.",
+      "tags": ["property", "duplicate", "copy"]
+    },
+    {
+      "className": "PropertyGroup",
+      "member": "numProperties",
+      "signature": "",
+      "returnType": "Integer",
+      "description": "Number of child properties in this group.",
+      "notes": "Read-only.",
+      "tags": ["property", "group", "count"]
+    },
+    {
+      "className": "PropertyGroup",
+      "member": "property",
+      "signature": "(indexOrName)",
+      "returnType": "PropertyBase",
+      "description": "Gets a child property by 1-based index or name/matchName.",
+      "notes": "Returns PropertyBase. Null if not found by name.",
+      "tags": ["property", "group", "get", "child"]
+    },
+    {
+      "className": "PropertyGroup",
+      "member": "addProperty",
+      "signature": "(name)",
+      "returnType": "PropertyBase",
+      "description": "Adds a property to this group (e.g., adding an effect or mask).",
+      "notes": "name: display name or matchName. Use canAddProperty() to check first.",
+      "tags": ["property", "group", "add", "effect", "mask"]
+    },
+    {
+      "className": "PropertyGroup",
+      "member": "canAddProperty",
+      "signature": "(name)",
+      "returnType": "Boolean",
+      "description": "Returns true if a property with the given name can be added.",
+      "notes": "name: display name or matchName.",
+      "tags": ["property", "group", "check", "add"]
+    },
+    {
+      "className": "KeyframeEase",
+      "member": "speed",
+      "signature": "",
+      "returnType": "Float",
+      "description": "Speed component of the keyframe ease.",
+      "notes": "Read/write. Units per second.",
+      "tags": ["keyframe", "ease", "speed"]
+    },
+    {
+      "className": "KeyframeEase",
+      "member": "influence",
+      "signature": "",
+      "returnType": "Float",
+      "description": "Influence (strength) of the keyframe ease as a percentage (0-100).",
+      "notes": "Read/write. Higher values mean more gradual acceleration/deceleration.",
+      "tags": ["keyframe", "ease", "influence"]
+    },
+    {
+      "className": "TextDocument",
+      "member": "text",
+      "signature": "",
+      "returnType": "String",
+      "description": "The text content of the text layer.",
+      "notes": "Read/write.",
+      "tags": ["text", "content", "string"]
+    },
+    {
+      "className": "TextDocument",
+      "member": "fontSize",
+      "signature": "",
+      "returnType": "Float",
+      "description": "Font size in pixels.",
+      "notes": "Read/write.",
+      "tags": ["text", "font", "size"]
+    },
+    {
+      "className": "TextDocument",
+      "member": "font",
+      "signature": "",
+      "returnType": "String",
+      "description": "The PostScript name of the font.",
+      "notes": "Read/write.",
+      "tags": ["text", "font", "family"]
+    },
+    {
+      "className": "TextDocument",
+      "member": "fillColor",
+      "signature": "",
+      "returnType": "Array [R,G,B]",
+      "description": "Fill color as [R,G,B] array (0-1).",
+      "notes": "Read/write.",
+      "tags": ["text", "fill", "color"]
+    },
+    {
+      "className": "TextDocument",
+      "member": "strokeColor",
+      "signature": "",
+      "returnType": "Array [R,G,B]",
+      "description": "Stroke color as [R,G,B] array (0-1).",
+      "notes": "Read/write.",
+      "tags": ["text", "stroke", "color"]
+    },
+    {
+      "className": "TextDocument",
+      "member": "strokeWidth",
+      "signature": "",
+      "returnType": "Float",
+      "description": "Stroke width in pixels.",
+      "notes": "Read/write.",
+      "tags": ["text", "stroke", "width"]
+    },
+    {
+      "className": "TextDocument",
+      "member": "applyFill",
+      "signature": "",
+      "returnType": "Boolean",
+      "description": "True if fill is applied to text.",
+      "notes": "Read/write.",
+      "tags": ["text", "fill", "enabled"]
+    },
+    {
+      "className": "TextDocument",
+      "member": "applyStroke",
+      "signature": "",
+      "returnType": "Boolean",
+      "description": "True if stroke is applied to text.",
+      "notes": "Read/write.",
+      "tags": ["text", "stroke", "enabled"]
+    },
+    {
+      "className": "TextDocument",
+      "member": "strokeOverFill",
+      "signature": "",
+      "returnType": "Boolean",
+      "description": "True if stroke renders over fill.",
+      "notes": "Read/write.",
+      "tags": ["text", "stroke", "fill", "order"]
+    },
+    {
+      "className": "TextDocument",
+      "member": "justification",
+      "signature": "",
+      "returnType": "ParagraphJustification enum",
+      "description": "Text justification/alignment.",
+      "notes": "Read/write. LEFT_JUSTIFY, CENTER_JUSTIFY, RIGHT_JUSTIFY, FULL_JUSTIFY_LASTLINE_LEFT, etc.",
+      "tags": ["text", "justify", "alignment", "paragraph"]
+    },
+    {
+      "className": "TextDocument",
+      "member": "tracking",
+      "signature": "",
+      "returnType": "Float",
+      "description": "Tracking (letter spacing) value.",
+      "notes": "Read/write.",
+      "tags": ["text", "tracking", "spacing", "kerning"]
+    },
+    {
+      "className": "TextDocument",
+      "member": "leading",
+      "signature": "",
+      "returnType": "Float",
+      "description": "Line spacing (leading) in pixels.",
+      "notes": "Read/write.",
+      "tags": ["text", "leading", "line", "spacing"]
+    },
+    {
+      "className": "TextDocument",
+      "member": "baselineLocs",
+      "signature": "",
+      "returnType": "Array",
+      "description": "Array of baseline position data for each line of text.",
+      "notes": "Read-only. Groups of 4 values per line: [lineStart, lineAscent, lineEnd, lineDescent].",
+      "tags": ["text", "baseline", "position", "metrics"]
+    },
+    {
+      "className": "TextDocument",
+      "member": "boxTextSize",
+      "signature": "",
+      "returnType": "Array [width, height]",
+      "description": "Size of the box text bounding box in pixels.",
+      "notes": "Read/write. Only valid for box (paragraph) text.",
+      "tags": ["text", "box", "size", "paragraph"]
+    },
+    {
+      "className": "TextDocument",
+      "member": "boxText",
+      "signature": "",
+      "returnType": "Boolean",
+      "description": "True if this is box (paragraph) text, false if point text.",
+      "notes": "Read-only.",
+      "tags": ["text", "box", "paragraph", "point"]
+    },
+    {
+      "className": "TextDocument",
+      "member": "allCaps",
+      "signature": "",
+      "returnType": "Boolean",
+      "description": "True if all caps is enabled.",
+      "notes": "Read/write.",
+      "tags": ["text", "caps", "uppercase"]
+    },
+    {
+      "className": "TextDocument",
+      "member": "smallCaps",
+      "signature": "",
+      "returnType": "Boolean",
+      "description": "True if small caps is enabled.",
+      "notes": "Read/write.",
+      "tags": ["text", "smallcaps"]
+    },
+    {
+      "className": "TextDocument",
+      "member": "baselineShift",
+      "signature": "",
+      "returnType": "Float",
+      "description": "Baseline shift in pixels.",
+      "notes": "Read/write.",
+      "tags": ["text", "baseline", "shift"]
+    },
+    {
+      "className": "Shape",
+      "member": "closed",
+      "signature": "",
+      "returnType": "Boolean",
+      "description": "True if the shape path is closed.",
+      "notes": "Read/write.",
+      "tags": ["shape", "path", "closed"]
+    },
+    {
+      "className": "Shape",
+      "member": "vertices",
+      "signature": "",
+      "returnType": "Array of [x,y]",
+      "description": "Array of vertex points for the shape.",
+      "notes": "Read/write. Each vertex is [x,y].",
+      "tags": ["shape", "vertices", "points", "path"]
+    },
+    {
+      "className": "Shape",
+      "member": "inTangents",
+      "signature": "",
+      "returnType": "Array of [x,y]",
+      "description": "Array of incoming tangent vectors for each vertex.",
+      "notes": "Read/write. Relative to vertex position.",
+      "tags": ["shape", "tangent", "bezier", "path"]
+    },
+    {
+      "className": "Shape",
+      "member": "outTangents",
+      "signature": "",
+      "returnType": "Array of [x,y]",
+      "description": "Array of outgoing tangent vectors for each vertex.",
+      "notes": "Read/write. Relative to vertex position.",
+      "tags": ["shape", "tangent", "bezier", "path"]
+    },
+    {
+      "className": "ImportOptions",
+      "member": "file",
+      "signature": "",
+      "returnType": "File",
+      "description": "The file to import.",
+      "notes": "Read/write. Must be set before calling importFile().",
+      "tags": ["import", "file"]
+    },
+    {
+      "className": "ImportOptions",
+      "member": "importAs",
+      "signature": "",
+      "returnType": "ImportAsType enum",
+      "description": "How to import: COMP, FOOTAGE, COMP_CROPPED_LAYERS, PROJECT.",
+      "notes": "Read/write.",
+      "tags": ["import", "type", "comp", "footage"]
+    },
+    {
+      "className": "ImportOptions",
+      "member": "sequence",
+      "signature": "",
+      "returnType": "Boolean",
+      "description": "True if importing as an image sequence.",
+      "notes": "Read/write.",
+      "tags": ["import", "sequence", "image"]
+    },
+    {
+      "className": "ImportOptions",
+      "member": "canImportAs",
+      "signature": "(type)",
+      "returnType": "Boolean",
+      "description": "Returns true if the file can be imported as the given type.",
+      "notes": "type: ImportAsType enum.",
+      "tags": ["import", "check", "type"]
+    },
+    {
+      "className": "MarkerValue",
+      "member": "comment",
+      "signature": "",
+      "returnType": "String",
+      "description": "The comment text of the marker.",
+      "notes": "Read/write.",
+      "tags": ["marker", "comment", "text"]
+    },
+    {
+      "className": "MarkerValue",
+      "member": "chapter",
+      "signature": "",
+      "returnType": "String",
+      "description": "Chapter name for the marker.",
+      "notes": "Read/write.",
+      "tags": ["marker", "chapter"]
+    },
+    {
+      "className": "MarkerValue",
+      "member": "cuePointName",
+      "signature": "",
+      "returnType": "String",
+      "description": "Web cue point name.",
+      "notes": "Read/write.",
+      "tags": ["marker", "cuepoint", "web"]
+    },
+    {
+      "className": "MarkerValue",
+      "member": "duration",
+      "signature": "",
+      "returnType": "Float",
+      "description": "Duration of the marker in seconds.",
+      "notes": "Read/write.",
+      "tags": ["marker", "duration", "time"]
+    },
+    {
+      "className": "MarkerValue",
+      "member": "eventCuePoint",
+      "signature": "",
+      "returnType": "Boolean",
+      "description": "True if this is an event cue point, false if navigation.",
+      "notes": "Read/write.",
+      "tags": ["marker", "event", "cuepoint"]
+    },
+    {
+      "className": "MarkerValue",
+      "member": "url",
+      "signature": "",
+      "returnType": "String",
+      "description": "URL associated with the marker.",
+      "notes": "Read/write.",
+      "tags": ["marker", "url", "web"]
+    },
+    {
+      "className": "MarkerValue",
+      "member": "frameTarget",
+      "signature": "",
+      "returnType": "String",
+      "description": "Frame target for the URL.",
+      "notes": "Read/write.",
+      "tags": ["marker", "frame", "target"]
+    },
+    {
+      "className": "MarkerValue",
+      "member": "label",
+      "signature": "",
+      "returnType": "Integer",
+      "description": "Color label index for the marker (0-16).",
+      "notes": "Read/write.",
+      "tags": ["marker", "label", "color"]
+    },
+    {
+      "className": "MarkerValue",
+      "member": "protectedRegion",
+      "signature": "",
+      "returnType": "Boolean",
+      "description": "True if the marker defines a protected region.",
+      "notes": "Read/write.",
+      "tags": ["marker", "protected", "region"]
+    }
+  ],
+  "recipes": [
+    {
+      "title": "Get active composition safely",
+      "code": "var comp = app.project.activeItem;\nif (!(comp instanceof CompItem)) {\n    return 'No active composition. Please select a composition first.';\n}",
+      "tags": ["comp", "composition", "active", "check", "safety"]
+    },
+    {
+      "title": "Wrap script in undo group",
+      "code": "app.beginUndoGroup('My Script');\ntry {\n    // Your script code here\n} catch (e) {\n    return 'Error: ' + e.toString();\n} finally {\n    app.endUndoGroup();\n}",
+      "tags": ["undo", "group", "safety", "error", "template"]
+    },
+    {
+      "title": "Create a solid layer",
+      "code": "var comp = app.project.activeItem;\nvar solid = comp.layers.addSolid(\n    [1, 0, 0],       // color [R,G,B] 0-1\n    'Red Solid',      // name\n    comp.width,       // width\n    comp.height,      // height\n    1,                // pixel aspect\n    comp.duration     // duration\n);",
+      "tags": ["solid", "layer", "create", "add", "color"]
+    },
+    {
+      "title": "Create a text layer with styling",
+      "code": "var comp = app.project.activeItem;\nvar textLayer = comp.layers.addText('Hello World');\nvar textProp = textLayer.property('ADBE Text Properties').property('ADBE Text Document');\nvar textDoc = textProp.value;\ntextDoc.fontSize = 72;\ntextDoc.font = 'Arial-BoldMT';\ntextDoc.fillColor = [1, 1, 1];\ntextDoc.justification = ParagraphJustification.CENTER_JUSTIFY;\ntextProp.setValue(textDoc);",
+      "tags": ["text", "layer", "create", "font", "style", "color"]
+    },
+    {
+      "title": "Animate position with keyframes",
+      "code": "var comp = app.project.activeItem;\nvar layer = comp.layer(1);\nvar pos = layer.property('Position');\npos.setValueAtTime(0, [100, 540]);\npos.setValueAtTime(2, [1820, 540]);",
+      "tags": ["animate", "position", "keyframe", "move", "motion"]
+    },
+    {
+      "title": "Animate with easing (ease in/out)",
+      "code": "var comp = app.project.activeItem;\nvar layer = comp.layer(1);\nvar pos = layer.property('Position');\npos.setValueAtTime(0, [100, 540]);\npos.setValueAtTime(1, [960, 540]);\n// Apply ease\nvar easeIn = new KeyframeEase(0, 75);\nvar easeOut = new KeyframeEase(0, 75);\npos.setTemporalEaseAtKey(1, [easeIn, easeIn]);\npos.setTemporalEaseAtKey(2, [easeOut, easeOut]);",
+      "tags": ["animate", "ease", "easing", "smooth", "keyframe", "bezier"]
+    },
+    {
+      "title": "Add an effect to a layer",
+      "code": "var comp = app.project.activeItem;\nvar layer = comp.layer(1);\nvar effects = layer.property('ADBE Effect Parade');\nvar blur = effects.addProperty('ADBE Gaussian Blur 2');\nblur.property('ADBE Gaussian Blur 2-0001').setValue(10); // Blurriness",
+      "tags": ["effect", "add", "apply", "blur", "gaussian"]
+    },
+    {
+      "title": "Loop through all layers",
+      "code": "var comp = app.project.activeItem;\nfor (var i = 1; i <= comp.numLayers; i++) {\n    var layer = comp.layer(i);\n    // Do something with each layer\n}",
+      "tags": ["loop", "iterate", "layers", "all", "each"]
+    },
+    {
+      "title": "Set expression on property",
+      "code": "var comp = app.project.activeItem;\nvar layer = comp.layer(1);\nvar opacity = layer.property('Opacity');\nopacity.expression = 'wiggle(2, 20)';",
+      "tags": ["expression", "set", "wiggle", "code"]
+    },
+    {
+      "title": "Add a null parent for layer control",
+      "code": "var comp = app.project.activeItem;\nvar nullLayer = comp.layers.addNull();\nnullLayer.name = 'Controller';\nvar targetLayer = comp.layer(2); // layer below null\ntargetLayer.parent = nullLayer;",
+      "tags": ["null", "parent", "control", "hierarchy"]
+    },
+    {
+      "title": "Import a file into the project",
+      "code": "var importFile = new ImportOptions(new File('/path/to/file.mov'));\nif (importFile.canImportAs(ImportAsType.FOOTAGE)) {\n    importFile.importAs = ImportAsType.FOOTAGE;\n    var footage = app.project.importFile(importFile);\n}",
+      "tags": ["import", "file", "footage", "project"]
+    },
+    {
+      "title": "Trim layer to work area",
+      "code": "var comp = app.project.activeItem;\nvar layer = comp.layer(1);\nlayer.inPoint = comp.workAreaStart;\nlayer.outPoint = comp.workAreaStart + comp.workAreaDuration;",
+      "tags": ["trim", "layer", "workarea", "inpoint", "outpoint"]
+    },
+    {
+      "title": "Center text layer anchor point",
+      "code": "var comp = app.project.activeItem;\nvar layer = comp.layer(1);\nvar rect = layer.sourceRectAtTime(comp.time, false);\nvar anchorX = rect.left + rect.width / 2;\nvar anchorY = rect.top + rect.height / 2;\nlayer.property('Anchor Point').setValue([anchorX, anchorY]);\nlayer.property('Position').setValue([comp.width / 2, comp.height / 2]);",
+      "tags": ["text", "anchor", "center", "position", "sourcerect"]
+    },
+    {
+      "title": "Create shape layer with rectangle",
+      "code": "var comp = app.project.activeItem;\nvar shapeLayer = comp.layers.addShape();\nvar contents = shapeLayer.property('Contents');\nvar rectGroup = contents.addProperty('ADBE Vector Group');\nvar rect = rectGroup.property('Contents').addProperty('ADBE Vector Shape - Rect');\nrect.property('ADBE Vector Rect Size').setValue([200, 200]);\nvar fill = rectGroup.property('Contents').addProperty('ADBE Vector Graphic - Fill');\nfill.property('ADBE Vector Fill Color').setValue([0, 0.5, 1, 1]);",
+      "tags": ["shape", "rectangle", "create", "fill", "color"]
+    },
+    {
+      "title": "Animate opacity fade in",
+      "code": "var comp = app.project.activeItem;\nvar layer = comp.layer(1);\nvar opacity = layer.property('Opacity');\nopacity.setValueAtTime(0, 0);\nopacity.setValueAtTime(1, 100);",
+      "tags": ["animate", "opacity", "fade", "in", "keyframe"]
+    },
+    {
+      "title": "Animate scale with bounce expression",
+      "code": "var comp = app.project.activeItem;\nvar layer = comp.layer(1);\nvar scale = layer.property('Scale');\nscale.setValueAtTime(0, [0, 0]);\nscale.setValueAtTime(0.5, [100, 100]);\nscale.expression = 'n = 0;\\nif (numKeys > 0) {\\n  n = nearestKey(time).index;\\n  if (key(n).time > time) n--;\\n}\\nif (n > 0) {\\n  t = time - key(n).time;\\n  amp = 0.06;\\n  freq = 3;\\n  decay = 5;\\n  value + value * amp * Math.sin(freq * t * 2 * Math.PI) / Math.exp(decay * t);\\n} else {\\n  value;\\n}';",
+      "tags": ["animate", "scale", "bounce", "expression", "overshoot"]
+    },
+    {
+      "title": "Duplicate layer multiple times",
+      "code": "var comp = app.project.activeItem;\nvar layer = comp.layer(1);\nvar copies = 5;\nfor (var i = 0; i < copies; i++) {\n    var dup = layer.duplicate();\n    dup.startTime = layer.startTime + (i + 1) * 0.1;\n}",
+      "tags": ["duplicate", "layer", "copies", "stagger", "repeat"]
+    },
+    {
+      "title": "Access transform properties",
+      "code": "var comp = app.project.activeItem;\nvar layer = comp.layer(1);\nvar transform = layer.property('ADBE Transform Group');\nvar position = transform.property('ADBE Position');\nvar scale = transform.property('ADBE Scale');\nvar rotation = transform.property('ADBE Rotate Z');\nvar opacity = transform.property('ADBE Opacity');\nvar anchorPoint = transform.property('ADBE Anchor Point');",
+      "tags": ["transform", "position", "scale", "rotation", "opacity", "anchor", "matchname"]
+    },
+    {
+      "title": "Pre-compose selected layers",
+      "code": "var comp = app.project.activeItem;\nvar selected = comp.selectedLayers;\nif (selected.length > 0) {\n    var indices = [];\n    for (var i = 0; i < selected.length; i++) {\n        indices.push(selected[i].index);\n    }\n    comp.layers.precompose(indices, 'Pre-comp', true);\n}",
+      "tags": ["precompose", "layers", "selected", "composition"]
+    },
+    {
+      "title": "Add layer marker",
+      "code": "var comp = app.project.activeItem;\nvar layer = comp.layer(1);\nvar marker = layer.property('Marker');\nvar markerVal = new MarkerValue('Hit Point');\nmarkerVal.duration = 0.5;\nmarker.setValueAtTime(1.0, markerVal);",
+      "tags": ["marker", "add", "layer", "annotation"]
+    },
+    {
+      "title": "Find layer by name",
+      "code": "var comp = app.project.activeItem;\nvar layer = null;\nfor (var i = 1; i <= comp.numLayers; i++) {\n    if (comp.layer(i).name === 'My Layer') {\n        layer = comp.layer(i);\n        break;\n    }\n}",
+      "tags": ["find", "layer", "name", "search"]
+    },
+    {
+      "title": "Animate along a motion path",
+      "code": "var comp = app.project.activeItem;\nvar layer = comp.layer(1);\nvar pos = layer.property('Position');\npos.setValueAtTime(0, [100, 500]);\npos.setValueAtTime(1, [500, 200]);\npos.setValueAtTime(2, [900, 500]);\n// Set spatial tangents for curved path\npos.setSpatialTangentsAtKey(1, [0, 0], [0, 0]);\npos.setSpatialTangentsAtKey(2, [-100, -100], [100, -100]);\npos.setSpatialTangentsAtKey(3, [0, 0], [0, 0]);",
+      "tags": ["animate", "motion", "path", "curve", "spatial", "tangent"]
+    },
+    {
+      "title": "Set hold keyframes (no interpolation)",
+      "code": "var comp = app.project.activeItem;\nvar layer = comp.layer(1);\nvar opacity = layer.property('Opacity');\nopacity.setValueAtTime(0, 100);\nopacity.setValueAtTime(1, 0);\nopacity.setInterpolationTypeAtKey(1, KeyframeInterpolationType.HOLD);",
+      "tags": ["keyframe", "hold", "interpolation", "step", "snap"]
+    },
+    {
+      "title": "Create adjustment layer with effect",
+      "code": "var comp = app.project.activeItem;\nvar adj = comp.layers.addSolid([0,0,0], 'Adjustment', comp.width, comp.height, 1, comp.duration);\nadj.adjustmentLayer = true;\nvar effects = adj.property('ADBE Effect Parade');\nvar cc = effects.addProperty('ADBE CurvesCustom'); // Curves",
+      "tags": ["adjustment", "layer", "effect", "curves", "color"]
+    },
+    {
+      "title": "Stagger layers in time",
+      "code": "var comp = app.project.activeItem;\nvar offset = 0.1; // seconds between each layer\nfor (var i = 1; i <= comp.numLayers; i++) {\n    comp.layer(i).startTime = (i - 1) * offset;\n}",
+      "tags": ["stagger", "offset", "time", "layers", "cascade"]
+    },
+    {
+      "title": "Create composition programmatically",
+      "code": "var comp = app.project.items.addComp(\n    'My Comp',  // name\n    1920,       // width\n    1080,       // height\n    1,          // pixel aspect\n    10,         // duration seconds\n    30          // frame rate\n);",
+      "tags": ["comp", "composition", "create", "new", "add"]
+    }
+  ],
+  "gotchas": [
+    {
+      "title": "Use var, not let or const",
+      "description": "ExtendScript is ES3-based. let, const, arrow functions, template literals, destructuring, for...of, Promises, and async/await are NOT supported. Always use var and traditional function expressions.",
+      "tags": ["syntax", "es3", "var", "let", "const", "arrow", "template"]
+    },
+    {
+      "title": "Layer indices are 1-based",
+      "description": "All collection indices in ExtendScript start at 1, not 0. comp.layer(1) is the first layer, comp.numLayers is the last. Same for properties: property(1) is the first child.",
+      "tags": ["index", "layer", "collection", "1-based", "offset"]
+    },
+    {
+      "title": "Always check activeItem is a CompItem",
+      "description": "app.project.activeItem can be null, a FolderItem, or a FootageItem. Always verify with: if (!(comp instanceof CompItem)) return; before accessing .layers or .numLayers.",
+      "tags": ["activeitem", "comp", "null", "check", "safety"]
+    },
+    {
+      "title": "Always use undo groups",
+      "description": "Wrap all operations in app.beginUndoGroup() / app.endUndoGroup(). Without this, each individual property change creates a separate undo step, and the user cannot undo your script as a single action.",
+      "tags": ["undo", "group", "safety"]
+    },
+    {
+      "title": "endUndoGroup must always run",
+      "description": "If an error occurs between beginUndoGroup and endUndoGroup, the undo state can become corrupted. Always use try/catch/finally with endUndoGroup() in the finally block.",
+      "tags": ["undo", "error", "finally", "safety"]
+    },
+    {
+      "title": "setValue removes all keyframes",
+      "description": "Calling property.setValue() on a keyframed property removes ALL keyframes and sets a static value. To set a value at a specific time without removing keyframes, use setValueAtTime() instead.",
+      "tags": ["property", "keyframe", "setvalue", "static"]
+    },
+    {
+      "title": "Color values are 0-1, not 0-255",
+      "description": "All color values in ExtendScript use 0.0 to 1.0 range, not 0-255. Red is [1,0,0], white is [1,1,1]. To convert: divide each channel by 255.",
+      "tags": ["color", "rgb", "range", "value"]
+    },
+    {
+      "title": "Use matchNames for reliable property access",
+      "description": "Display names can change between AE versions and localizations. Use matchNames (e.g., 'ADBE Transform Group', 'ADBE Position', 'ADBE Opacity') for reliable cross-version scripts.",
+      "tags": ["property", "matchname", "name", "localization"]
+    },
+    {
+      "title": "No alert() in CEP scripts",
+      "description": "Do NOT use alert() or confirm() in scripts run via CEP evalScript. They can freeze the panel. Return results as strings instead.",
+      "tags": ["alert", "confirm", "dialog", "cep", "freeze"]
+    },
+    {
+      "title": "Time values are in seconds, not frames",
+      "description": "All time values in ExtendScript are in seconds as floats, not frame numbers. To convert frames to seconds: frameNumber / comp.frameRate. To convert seconds to frames: seconds * comp.frameRate.",
+      "tags": ["time", "seconds", "frames", "convert"]
+    },
+    {
+      "title": "KeyframeEase needs one object per dimension",
+      "description": "When calling setTemporalEaseAtKey(), provide an array of KeyframeEase objects matching the property's dimensions. Position (2D) needs [ease, ease], 3D Position needs [ease, ease, ease], single-value properties need [ease].",
+      "tags": ["keyframe", "ease", "dimensions", "temporal"]
+    },
+    {
+      "title": "TextDocument: set then setValue",
+      "description": "To modify text properties, get the TextDocument from the text property's value, modify it, then call setValue() with the modified document. You cannot directly set sub-properties like fontSize on the property.",
+      "tags": ["text", "textdocument", "font", "modify"]
+    },
+    {
+      "title": "Shape layers: use matchNames for content",
+      "description": "Shape layer contents use matchNames like 'ADBE Vector Group', 'ADBE Vector Shape - Rect', 'ADBE Vector Graphic - Fill'. The display names ('Rectangle 1', 'Fill 1') vary by language.",
+      "tags": ["shape", "matchname", "content", "vector"]
+    },
+    {
+      "title": "Property value types differ",
+      "description": "Property values vary by type: Position is [x,y] or [x,y,z], Opacity is a single number (0-100), Color is [r,g,b] or [r,g,b,a] (0-1), Rotation is degrees. Always check propertyValueType.",
+      "tags": ["property", "value", "type", "format"]
+    },
+    {
+      "title": "Avoid modifying layers while iterating",
+      "description": "Adding or removing layers during a loop over comp.numLayers will cause index shifts and missed/doubled layers. Collect references first, then modify, or iterate in reverse.",
+      "tags": ["loop", "iterate", "modify", "index", "layer"]
+    },
+    {
+      "title": "Effects matchNames require the full ADBE prefix",
+      "description": "Effect matchNames start with 'ADBE' (e.g., 'ADBE Gaussian Blur 2', 'ADBE Drop Shadow'). Effect property matchNames append a counter suffix (e.g., 'ADBE Gaussian Blur 2-0001' for Blurriness).",
+      "tags": ["effect", "matchname", "adbe", "property"]
+    },
+    {
+      "title": "sourceRectAtTime is essential for text/shape positioning",
+      "description": "Text and shape layers have dynamic bounds. Use layer.sourceRectAtTime(time, false) to get actual {top, left, width, height} for accurate positioning and anchor point calculation.",
+      "tags": ["sourcerect", "text", "shape", "bounds", "position"]
+    },
+    {
+      "title": "Expressions use different syntax than scripts",
+      "description": "Expressions run inside After Effects and use JavaScript/ExtendScript expression syntax. They reference properties via thisComp, thisLayer, etc. Scripts run externally and use the scripting API. Don't confuse the two.",
+      "tags": ["expression", "script", "syntax", "difference"]
+    },
+    {
+      "title": "String concatenation only, no template literals",
+      "description": "ExtendScript does not support backtick template literals (`). Always use string concatenation with + operator: 'Value: ' + myVar + ' units'.",
+      "tags": ["string", "template", "concat", "backtick"]
+    },
+    {
+      "title": "No for...of or for...in for arrays",
+      "description": "ExtendScript does not support for...of loops. Use traditional for loops: for (var i = 0; i < arr.length; i++). for...in on arrays can include prototype properties.",
+      "tags": ["loop", "for", "array", "iterate"]
+    },
+    {
+      "title": "File paths use forward slashes or File object",
+      "description": "Use forward slashes in file paths or the File/Folder constructors: new File('/Users/name/file.mov') or File.openDialog() for user selection.",
+      "tags": ["file", "path", "slash", "import"]
+    },
+    {
+      "title": "Precompose layerIndices are 1-based integers",
+      "description": "The precompose() method expects an array of 1-based integer indices, not layer objects. Collect indices: var indices = []; for (var i = 0; i < sel.length; i++) indices.push(sel[i].index);",
+      "tags": ["precompose", "index", "array", "layers"]
+    },
+    {
+      "title": "3D layers need threeDLayer = true",
+      "description": "To access Z position, Z rotation, or material options, the layer must have threeDLayer set to true. Otherwise, Position is [x,y] only.",
+      "tags": ["3d", "layer", "position", "z", "threedlayer"]
+    },
+    {
+      "title": "Motion blur requires both comp and layer settings",
+      "description": "For motion blur to render, BOTH comp.motionBlur must be true AND the individual layer.motionBlur must be true. Enabling only one is not sufficient.",
+      "tags": ["motionblur", "comp", "layer", "render"]
+    },
+    {
+      "title": "Track mattes use the layer above",
+      "description": "A track matte uses the layer directly above it in the stack. When setting trackMatteType, ensure the matte layer is at index (targetLayer.index - 1).",
+      "tags": ["trackmatte", "layer", "above", "index", "alpha", "luma"]
+    }
+  ]
+}
