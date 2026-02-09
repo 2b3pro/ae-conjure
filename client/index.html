@@ -13,18 +13,18 @@
         <div class="toolbar">
             <span class="toolbar-title">AE Conjure</span>
             <div class="toolbar-spacer"></div>
-            <div class="toggle-row">
+            <div class="toggle-row tooltip" data-tooltip="Send comp structure to AI for context-aware scripts">
                 <input type="checkbox" id="comp-context-toggle" checked>
                 <label for="comp-context-toggle">Comp</label>
             </div>
-            <button class="btn-icon" id="library-btn" title="Script Library">&#128218;</button>
-            <button class="btn-icon" id="settings-btn" title="Settings">&#9881;</button>
+            <button class="btn-icon tooltip" id="library-btn" data-tooltip="Saved scripts library">&#128218;</button>
+            <button class="btn-icon tooltip" id="settings-btn" data-tooltip="API keys and settings">&#9881;</button>
         </div>
 
         <!-- Model selection row -->
         <div class="model-row">
-            <select id="provider-select" title="AI Provider"></select>
-            <select id="model-select" title="Model"></select>
+            <select id="provider-select" class="tooltip" data-tooltip="AI provider (set API key in settings)"></select>
+            <select id="model-select" class="tooltip" data-tooltip="Model to use for code generation"></select>
         </div>
 
         <!-- Chat area -->
@@ -37,12 +37,12 @@
 
         <!-- Input area -->
         <div class="input-area">
-            <button class="btn-icon" id="template-btn" title="Prompt templates">&#9776;</button>
+            <button class="btn-icon tooltip" id="template-btn" data-tooltip="Browse prompt templates">&#9776;</button>
             <textarea id="prompt-input"
                       placeholder="Describe what you want to do in After Effects..."
                       rows="2"></textarea>
-            <button class="btn-icon" id="refine-btn" title="Refine prompt with AI">&#10024;</button>
-            <button class="btn btn-primary" id="run-btn">Run</button>
+            <button class="btn-icon tooltip" id="refine-btn" data-tooltip="AI rewrites your prompt to be clearer and more specific">&#10024;</button>
+            <button class="btn btn-primary tooltip" id="run-btn" data-tooltip="Generate and run script in After Effects">Run</button>
         </div>
 
         <!-- Template popover -->
