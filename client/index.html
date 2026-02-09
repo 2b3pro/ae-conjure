@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AE Conjure</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="theme-dark">
+    <div class="panel">
+
+        <!-- Toolbar -->
+        <div class="toolbar">
+            <span class="toolbar-title">AE Conjure</span>
+            <div class="toolbar-spacer"></div>
+            <div class="toggle-row">
+                <input type="checkbox" id="comp-context-toggle" checked>
+                <label for="comp-context-toggle">Comp</label>
+            </div>
+            <button class="btn-icon" id="library-btn" title="Script Library">&#128218;</button>
+            <button class="btn-icon" id="settings-btn" title="Settings">&#9881;</button>
+        </div>
+
+        <!-- Model selection row -->
+        <div class="model-row">
+            <select id="provider-select" title="AI Provider"></select>
+            <select id="model-select" title="Model"></select>
+        </div>
+
+        <!-- Chat area -->
+        <div class="chat-container" id="chat-container">
+            <!-- Messages render here -->
+        </div>
+
+        <!-- Input area -->
+        <div class="input-area">
+            <textarea id="prompt-input"
+                      placeholder="Describe what you want to do in After Effects..."
+                      rows="2"></textarea>
+            <button class="btn btn-primary" id="run-btn">Run</button>
+        </div>
+    </div>
+
+    <!-- ============================================
+         Settings Overlay
+         ============================================ -->
+    <div class="overlay" id="settings-overlay">
+        <div class="overlay-header">
+            <h2>Settings</h2>
+            <button class="btn-icon" id="settings-close" title="Close">&#10005;</button>
+        </div>
+        <div class="overlay-body">
+
+            <div class="settings-group">
+                <h3>API Keys</h3>
+                <div class="settings-field">
+                    <label for="key-anthropic">Anthropic (Claude)</label>
+                    <input type="password" id="key-anthropic" placeholder="sk-ant-...">
+                </div>
+                <div class="settings-field">
+                    <label for="key-openai">OpenAI (GPT)</label>
+                    <input type="password" id="key-openai" placeholder="sk-...">
+                </div>
+                <div class="settings-field">
+                    <label for="key-google">Google (Gemini)</label>
+                    <input type="password" id="key-google" placeholder="AIza...">
+                </div>
+            </div>
+
+            <div class="settings-group">
+                <h3>Behavior</h3>
+                <div class="settings-field">
+                    <label for="max-retries">Max Auto-Retries</label>
+                    <input type="number" id="max-retries" min="1" max="10" value="3">
+                </div>
+            </div>
+
+        </div>
+        <div class="overlay-footer">
+            <button class="btn" id="settings-close-btn" onclick="document.getElementById('settings-overlay').classList.remove('visible')">Cancel</button>
+            <button class="btn btn-primary" id="settings-save">Save</button>
+        </div>
+    </div>
+
+    <!-- ============================================
+         Library Overlay
+         ============================================ -->
+    <div class="overlay" id="library-overlay">
+        <div class="overlay-header">
+            <h2>Script Library</h2>
+            <button class="btn-icon" id="library-close" title="Close">&#10005;</button>
+        </div>
+        <div class="overlay-body">
+            <div class="library-toolbar">
+                <input type="text" id="library-search" placeholder="Search scripts...">
+                <select id="library-filter">
+                    <option value="all">All</option>
+                    <option value="favorites">Favorites</option>
+                    <option value="Animation">Animation</option>
+                    <option value="Text">Text</option>
+                    <option value="Shapes">Shapes</option>
+                    <option value="Effects">Effects</option>
+                    <option value="Camera">Camera</option>
+                    <option value="Expressions">Expressions</option>
+                    <option value="Utility">Utility</option>
+                    <option value="Workflow">Workflow</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+            <div id="library-list">
+                <!-- Library items render here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts (order matters) -->
+    <script src="js/lib/CSInterface.js"></script>
+    <script src="js/settings.js"></script>
+    <script src="js/ai-client.js"></script>
+    <script src="js/retry-engine.js"></script>
+    <script src="js/library.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

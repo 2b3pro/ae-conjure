@@ -1,0 +1,19 @@
+{
+  "name": "ae-conjure",
+  "version": "1.0.0",
+  "description": "AI scripting assistant for After Effects — generate, run, and manage ExtendScript via Claude, GPT, and Gemini",
+  "author": "Ian Shen <ian@2b3pro.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/2b3pro/ae-conjure.git"
+  },
+  "keywords": [
+    "after-effects",
+    "extendscript",
+    "ai",
+    "cep",
+    "motion-design",
+    "scripting"
+  ]
+}
