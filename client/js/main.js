@@ -37,6 +37,11 @@
         populateModelSelect(settings.provider, settings.model);
         if ($compToggle) $compToggle.checked = settings.includeCompContext !== false;
 
+        // Sync settings to match what the dropdowns actually show
+        // (fixes stale model if stored model doesn't match current provider)
+        AEConjure.Settings.set('provider', $providerSelect.value);
+        AEConjure.Settings.set('model', $modelSelect.value);
+
         // Event listeners
         $runBtn.addEventListener('click', handleRun);
         $promptInput.addEventListener('keydown', function (e) {
@@ -50,6 +55,7 @@
             var provider = $providerSelect.value;
             populateModelSelect(provider);
             AEConjure.Settings.set('provider', provider);
+            AEConjure.Settings.set('model', $modelSelect.value);
         });
 
         $modelSelect.addEventListener('change', function () {
@@ -98,14 +104,21 @@
         var prompt = $promptInput.value.trim();
         if (!prompt || isProcessing) return;
 
+        // Read provider and model from the DOM dropdowns (source of truth)
+        var provider = $providerSelect.value;
+        var model = $modelSelect.value;
         var settings = AEConjure.Settings.load();
-        var apiKey = AEConjure.Settings.getApiKey();
+        var apiKey = AEConjure.Settings.getApiKey(provider);
 
         if (!apiKey) {
-            AEConjure.UI.showToast('Please set your API key in Settings first.', 'error');
+            AEConjure.UI.showToast('Please set your ' + AEConjure.AIClient.PROVIDERS[provider].name + ' API key in Settings first.', 'error');
             showSettings();
             return;
         }
+
+        // Sync settings to match what the user sees
+        AEConjure.Settings.set('provider', provider);
+        AEConjure.Settings.set('model', model);
 
         isProcessing = true;
         $runBtn.disabled = true;
@@ -126,8 +139,8 @@
         compContextPromise.then(function (compContext) {
             return AEConjure.RetryEngine.run({
                 prompt: prompt,
-                provider: settings.provider,
-                model: settings.model,
+                provider: provider,
+                model: model,
                 apiKey: apiKey,
                 compContext: compContext,
                 maxRetries: settings.maxRetries || 3,
