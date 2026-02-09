@@ -93,8 +93,9 @@ AEConjure.RetryEngine = (function () {
                     options.onCode(code, attemptNum);
                 }
 
-                // Execute in After Effects
-                return executeInAE(csInterface, code).then(function (execResult) {
+                // Execute in After Effects (pass prompt as undo label)
+                var undoLabel = 'AE Conjure: ' + options.prompt;
+                return executeInAE(csInterface, code, undoLabel).then(function (execResult) {
                     var attempt = {
                         attempt: attemptNum,
                         code: code,
@@ -135,7 +136,7 @@ AEConjure.RetryEngine = (function () {
      * @param {string} code - ExtendScript code
      * @returns {Promise<Object>} { success, result/error }
      */
-    function executeInAE(csInterface, code) {
+    function executeInAE(csInterface, code, label) {
         return new Promise(function (resolve) {
             // Escape the code for passing through evalScript
             var escapedCode = code
@@ -144,7 +145,12 @@ AEConjure.RetryEngine = (function () {
                 .replace(/\n/g, '\\n')
                 .replace(/\r/g, '\\r');
 
-            var script = "executeScript('" + escapedCode + "')";
+            var escapedLabel = (label || 'AE Conjure')
+                .replace(/\\/g, '\\\\')
+                .replace(/'/g, "\\'")
+                .substring(0, 60);
+
+            var script = "executeScript('" + escapedCode + "', '" + escapedLabel + "')";
 
             csInterface.evalScript(script, function (result) {
                 if (result === 'EvalScript error.' || result === EvalScript_ErrMessage) {

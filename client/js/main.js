@@ -404,7 +404,12 @@
             .replace(/\n/g, '\\n')
             .replace(/\r/g, '\\r');
 
-        csInterface.evalScript("executeScript('" + escapedCode + "')", function (result) {
+        var escapedName = ('AE Conjure: ' + script.name)
+            .replace(/\\/g, '\\\\')
+            .replace(/'/g, "\\'")
+            .substring(0, 60);
+
+        csInterface.evalScript("executeScript('" + escapedCode + "', '" + escapedName + "')", function (result) {
             try {
                 var parsed = JSON.parse(result);
                 if (parsed.success) {

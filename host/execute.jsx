@@ -17,8 +17,11 @@
  * @param {string} [label] - Optional undo group label (default: "AE Conjure")
  * @returns {string} JSON string with { success, result/error }
  */
+var _aeConjureExecCount = (typeof _aeConjureExecCount !== "undefined") ? _aeConjureExecCount : 0;
+
 function executeScript(code, label) {
-    if (!label) label = "AE Conjure";
+    _aeConjureExecCount++;
+    if (!label) label = "AE Conjure #" + _aeConjureExecCount;
 
     var result;
     var success = false;
