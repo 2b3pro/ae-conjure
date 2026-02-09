@@ -1,5 +1,7 @@
 # AE Conjure
 
+![AE Conjure](assets/hero-2-magic-code.png)
+
 **Free, open-source AI scripting assistant for Adobe After Effects.**
 
 Generate, run, and manage ExtendScript code using Claude, GPT, or Gemini — directly inside After Effects.
@@ -9,10 +11,15 @@ Generate, run, and manage ExtendScript code using Claude, GPT, or Gemini — dir
 ## Features
 
 - **Multi-Model AI** — Choose between Anthropic Claude, OpenAI GPT, and Google Gemini
+- **Multi-Turn Conversation** — AI remembers your chat — say "now make it bounce" and it knows what "it" is
 - **Auto-Retry** — Failed scripts are automatically retried with error context (up to 3 attempts)
+- **RAG Knowledge Base** — 234 API atoms, 26 recipes, and 25 gotchas injected into every prompt
 - **Composition Awareness** — Sends your comp structure to the AI for more accurate scripts
-- **Native Undo** — Every generated script is wrapped in an undo group (Cmd/Ctrl+Z to rollback)
+- **Native Undo** — Every script wrapped in an undo group, plus a one-click Undo button
+- **Explain This** — Click "?" on any code block to get a plain-English explanation
+- **Chat Commands** — `/clear`, `/undo`, `/help`, `/context`, `/kb`
 - **Script Library** — Save, search, categorize, and favorite your best scripts
+- **Prompt Templates** — Browse common AE scripting tasks, plus AI-powered prompt refinement
 - **Adobe Theme Sync** — Matches your After Effects color theme automatically
 
 ## Requirements
@@ -81,6 +88,9 @@ Keys are stored locally at `~/ae-conjure/settings.json` and are never transmitte
 
 - **Enable Comp Context** (checkbox in toolbar) to give the AI full awareness of your composition structure
 - Use specific language: "Add a 2-second fade-in to the selected layer" works better than "make it fade"
+- **Iterate naturally** — "now make it bounce" or "change the color to blue" builds on previous context
+- Use the **sparkle button** to let AI rewrite vague prompts into precise instructions
+- Type `/help` in the prompt to see all available chat commands
 - The Script Library stores scripts locally in `~/ae-conjure/library.json`
 
 ## Architecture
@@ -92,17 +102,21 @@ ae-conjure/
 │   ├── index.html             # Main panel
 │   ├── css/styles.css         # Adobe Spectrum-inspired theme
 │   └── js/
-│       ├── main.js            # Panel orchestration
+│       ├── main.js            # Panel orchestration & chat commands
 │       ├── ai-client.js       # Multi-model API router
 │       ├── retry-engine.js    # Auto-retry with error feedback
+│       ├── knowledge.js       # RAG knowledge base retrieval
 │       ├── library.js         # Script library CRUD
+│       ├── templates.js       # Prompt templates & contextual hints
 │       ├── settings.js        # API key & preference management
-│       ├── ui.js              # DOM rendering
+│       ├── ui.js              # DOM rendering & message UI
 │       └── lib/CSInterface.js # Adobe CEP interface library
 ├── host/                       # ExtendScript (runs in AE)
-│   ├── main.jsx               # Entry point
+│   ├── main.jsx               # Entry point + undo command
 │   ├── introspect.jsx         # Comp structure reader
 │   └── execute.jsx            # Safe execution wrapper
+├── data/
+│   └── knowledge.json         # RAG corpus (234 API atoms, 26 recipes, 25 gotchas)
 └── package.json
 ```
 
@@ -110,11 +124,12 @@ ae-conjure/
 
 1. You describe what you want in natural language
 2. AE Conjure reads your active composition structure (layers, effects, selection)
-3. Your prompt + comp context is sent to the AI model
-4. The AI returns ExtendScript code (ES3 syntax)
-5. Code is executed inside an undo group via `csInterface.evalScript()`
-6. If execution fails, the error + code is sent back for auto-retry (up to 3x)
-7. On success, you can save the script to your local library
+3. Relevant API knowledge is retrieved from the built-in knowledge base (~400 tokens)
+4. Your prompt + comp context + knowledge + conversation history is sent to the AI
+5. The AI returns ExtendScript code (ES3 syntax)
+6. Code is executed inside an undo group via `csInterface.evalScript()`
+7. If execution fails, the error + code is sent back for auto-retry (up to 3x)
+8. On success, you can undo, explain, or save the script to your library
 
 ## Contributing
 
