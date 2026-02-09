@@ -263,6 +263,25 @@ html, body {
     background: var(--code-header-bg);
     font-size: var(--font-size-sm);
     color: var(--text-secondary);
+    cursor: pointer;
+}
+
+.code-header-left {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.code-toggle {
+    width: 20px;
+    height: 20px;
+    font-size: 10px;
+    transition: transform 0.15s;
+}
+
+.code-line-count {
+    color: var(--text-muted);
+    font-size: 10px;
 }
 
 .code-block pre {
@@ -270,6 +289,14 @@ html, body {
     padding: var(--spacing-md);
     background: var(--code-bg);
     overflow-x: auto;
+    transition: max-height 0.2s ease, padding 0.2s ease;
+}
+
+.code-block.collapsed pre {
+    max-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    overflow: hidden;
 }
 
 .code-block code {

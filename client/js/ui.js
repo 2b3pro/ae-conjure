@@ -75,21 +75,46 @@ AEConjure.UI = (function () {
      */
     function createCodeBlock(code) {
         var container = document.createElement('div');
-        container.className = 'code-block';
+        container.className = 'code-block collapsed';
 
         var header = document.createElement('div');
         header.className = 'code-header';
-        header.innerHTML = '<span>ExtendScript</span>';
+
+        var toggleBtn = document.createElement('button');
+        toggleBtn.className = 'btn-icon code-toggle';
+        toggleBtn.title = 'Show code';
+        toggleBtn.textContent = '\u25B6';
+        toggleBtn.onclick = function () {
+            var isCollapsed = container.classList.toggle('collapsed');
+            toggleBtn.textContent = isCollapsed ? '\u25B6' : '\u25BC';
+            toggleBtn.title = isCollapsed ? 'Show code' : 'Hide code';
+        };
+
+        var label = document.createElement('span');
+        label.textContent = 'ExtendScript';
+
+        var lineCount = document.createElement('span');
+        lineCount.className = 'code-line-count';
+        var lines = code.split('\n').length;
+        lineCount.textContent = lines + ' line' + (lines !== 1 ? 's' : '');
+
+        var headerLeft = document.createElement('div');
+        headerLeft.className = 'code-header-left';
+        headerLeft.appendChild(toggleBtn);
+        headerLeft.appendChild(label);
+        headerLeft.appendChild(lineCount);
 
         var copyBtn = document.createElement('button');
         copyBtn.className = 'btn-icon';
         copyBtn.title = 'Copy code';
-        copyBtn.innerHTML = '&#128203;';
+        copyBtn.textContent = '\uD83D\uDCCB';
         copyBtn.onclick = function () {
             copyToClipboard(code);
-            copyBtn.innerHTML = '&#10003;';
-            setTimeout(function () { copyBtn.innerHTML = '&#128203;'; }, 1500);
+            copyBtn.textContent = '\u2713';
+            setTimeout(function () { copyBtn.textContent = '\uD83D\uDCCB'; }, 1500);
         };
+
+        header.appendChild(headerLeft);
         header.appendChild(copyBtn);
 
         var pre = document.createElement('pre');
